@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:graduate/helper/constatn.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
   static const String ID = 'LoginPage';
+  GlobalKey<FormState> formKey = GlobalKey();
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -12,7 +14,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('Login Page')),
-    );
+        body: Form(
+      key: widget.formKey,
+      child: ListView(children: [
+        const SizedBox(
+          height: 50,
+        ),
+        Image.asset(
+          kCollegeIcon,
+          height: 100,
+        ),
+        
+      ]),
+    ));
   }
 }

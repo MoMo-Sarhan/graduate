@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        LoginPage.ID: (context) => const LoginPage(),
+        LoginPage.ID: (context) => LoginPage(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
