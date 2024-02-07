@@ -12,7 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('lkjfa')),
+      body: Center(child: Text('Login Page')),
     );
   }
 }

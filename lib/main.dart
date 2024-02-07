@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        LoginPage.ID:(context)=>const LoginPage(),
+        LoginPage.ID: (context) => const LoginPage(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginPage(),
+      initialRoute: LoginPage.ID,
     );
   }
 }
