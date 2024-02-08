@@ -3,10 +3,12 @@ import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/component/CustomButton.dart';
 import 'package:graduate/component/custom_text_filed.dart';
 import 'package:graduate/component/dropDownGender.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/helper/constatn.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/auth/auth_services.dart';
@@ -361,8 +363,8 @@ class _RegisterPageState extends State<RegisterPage> {
           password: _passwordController.text);
 
       try {
-        final authservice = AuthService();
-        await authservice.SignUpWithEmailAndPassword(user: user);
+        await BlocProvider.of<LoginStateCubit>(context)
+            .SignUpWithEmailandPassword(user: user);
       } catch (e) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
