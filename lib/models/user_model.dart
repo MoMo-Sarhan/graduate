@@ -1,22 +1,22 @@
 class UserModel {
-  final String id;
+  final String? uid;
   final String firstName;
-  final String LastName;
+  final String lastName;
   final String gender;
   final String phone;
   final String email;
   final String userType;
   final String? department;
-  final String? gpa;
+  final double? gpa;
   final String password;
   final String profileIcon;
   final int? level;
   final List<String>? Courses;
 
   UserModel({
-    required this.id,
+    this.uid,
     required this.firstName,
-    required this.LastName,
+    required this.lastName,
     required this.gender,
     required this.email,
     required this.phone,
@@ -31,9 +31,9 @@ class UserModel {
 
   factory UserModel.fromDocs(data) {
     return UserModel(
-      id: data['id'],
+      uid: data['id'],
       firstName: data['firstName'],
-      LastName: data['lastName'],
+      lastName: data['lastName'],
       gender: data['gender'],
       email: data['email'],
       phone: data['email'],
@@ -49,5 +49,5 @@ class UserModel {
   bool isStudent() => userType == 'Student' ? true : false;
   bool isDoctor() => userType == 'Doctor' ? true : false;
   bool isGeneral() => userType == 'General' ? true : false;
-  String getFullName() => '$firstName $LastName';
+  String getFullName() => '$firstName $lastName';
 }

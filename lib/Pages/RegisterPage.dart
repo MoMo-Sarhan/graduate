@@ -1,12 +1,16 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/component/CustomButton.dart';
 import 'package:graduate/component/custom_text_filed.dart';
 import 'package:graduate/component/dropDownGender.dart';
 import 'package:graduate/helper/constatn.dart';
+import 'package:graduate/models/user_model.dart';
+import 'package:graduate/services/auth/auth_services.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
@@ -313,6 +317,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             CustomButton(
+              onPressed: signUp,
               formKey: widget.formKey,
               buttonText: 'Sign Up',
             ),
@@ -327,7 +332,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, LoginPage.ID);
+                    Navigator.pop(context);
                   },
                   child: const Text('Login'),
                 ),
@@ -337,5 +342,31 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     ));
+  }
+
+  void signUp() async {
+    if (widget.formKey.currentState!.validate()) {
+      UserModel user = UserModel(
+          uid: null,
+          firstName: _firstNameController.text,
+          lastName: _lastNameController.text,
+          gender: gender,
+          email: _emailController.text,
+          phone: _phoneNumberController.text,
+          userType: userType,
+          profileIcon: '',
+          level: int.parse(_levelController.text),
+          gpa: double.parse(_gpaController.text),
+          department: department,
+          password: _passwordController.text);
+
+      try {
+        final authservice = AuthService();
+        await authservice.SignUpWithEmailAndPassword(user: user);
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
   }
 }

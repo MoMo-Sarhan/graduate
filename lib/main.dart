@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
 import 'package:graduate/firebase_options.dart';
+import 'package:graduate/helper/AuthGate.dart';
+import 'package:graduate/services/auth/auth_services.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         RegisterPage.ID: (context) => RegisterPage(),
-        LoginPage.ID:(context)=>LoginPage(),
+        LoginPage.ID: (context) => LoginPage(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: RegisterPage.ID,
+      home: const AuthGate(),
     );
   }
 }
