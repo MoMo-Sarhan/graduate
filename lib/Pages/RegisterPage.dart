@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/component/CustomButton.dart';
 import 'package:graduate/component/custom_text_filed.dart';
 import 'package:graduate/component/dropDownGender.dart';
@@ -22,14 +23,15 @@ class _RegisterPageState extends State<RegisterPage> {
   String userType = 'General';
   final List<String> departmentOptions = ['CS', 'AI', 'IS', 'SC'];
   String department = 'CS';
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _gpaController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _levelController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _gpaController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _levelController = TextEditingController();
   bool isChecked = false;
   bool showPassWord = true;
 
@@ -46,16 +48,21 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 100,
             ),
           ),
+          const SizedBox(
+            height: 25,
+          ),
+          const Center(
+            child: Text('Register',
+                style: TextStyle(fontSize: 30, fontFamily: 'pacifico')),
+          ),
+          const SizedBox(
+            height: 25,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ListView(children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
+              child:
+                  ListView(physics: const BouncingScrollPhysics(), children: [
                 CustomDropDown(
                     isEnabled: true,
                     onChange: (value) {
@@ -70,37 +77,45 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                       return null;
                     }),
-                CustomDropDown(
-                    isEnabled: true,
-                    onChange: (value) {
-                      userType = value!;
-                      setState(() {});
-                      log(userType);
-                    },
-                    items: userTypeOptions,
-                    leading: 'User    ',
-                    value: userType,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'User can not be null';
-                      }
-                      return null;
-                    }),
-                CustomDropDown(
-                    isEnabled: userType != 'General' ? true : false,
-                    onChange: (value) {
-                      department = value!;
-                      log(department);
-                    },
-                    items: departmentOptions,
-                    leading: 'Department',
-                    value: department,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Gender can not be null';
-                      }
-                      return null;
-                    }),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomDropDown(
+                          isEnabled: true,
+                          onChange: (value) {
+                            userType = value!;
+                            setState(() {});
+                            log(userType);
+                          },
+                          items: userTypeOptions,
+                          leading: 'User    ',
+                          value: userType,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'User can not be null';
+                            }
+                            return null;
+                          }),
+                    ),
+                    Expanded(
+                      child: CustomDropDown(
+                          isEnabled: userType != 'General' ? true : false,
+                          onChange: (value) {
+                            department = value!;
+                            log(department);
+                          },
+                          items: departmentOptions,
+                          leading: 'Department',
+                          value: department,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Gender can not be null';
+                            }
+                            return null;
+                          }),
+                    ),
+                  ],
+                ),
                 Row(
                   children: [
                     Expanded(
@@ -153,11 +168,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           double x;
                           try {
                             x = double.parse(value);
-                          } on FormatException catch (e) {
+                          } on FormatException {
                             return 'Enter right gpa';
+                          } catch (e) {
+                            return e.toString();
                           }
 
-                          if (x == null || x < 0 || x > 4) {
+                          if (x < 0 || x > 4) {
                             return 'Enter  GPA between 0 and 4';
                           }
                           return null;
@@ -179,8 +196,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           int x;
                           try {
                             x = int.parse(value);
-                          } on FormatException catch (e) {
+                          } on FormatException {
                             return 'Enter level';
+                          } catch (e) {
+                            return e.toString();
                           }
 
                           if (x < 1 || x > 4) {
@@ -203,6 +222,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     log(_phoneNumberController.text);
                   },
                   validator: (value) {
+                    int phone;
+                    try {
+                      phone = int.parse(value);
+                    } catch (e) {
+                      return "Please enter a valid Phone number";
+                    }
                     if (value.isEmpty) return 'Enter phone';
                     return null;
                   },
@@ -221,7 +246,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     if (value.isEmpty) return 'Enter Email';
                     return null;
                   },
-                  controller: _lastNameController,
+                  controller:_emailController,
                   label: 'Email',
                   hintText: 'Enter Email',
                 ),
@@ -282,6 +307,24 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           CustomButton(
             formKey: widget.formKey,
+            buttonText: 'Sign Up',
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Already have an account?",
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, LoginPage.ID);
+                },
+                child: const Text('Login'),
+              ),
+            ],
           )
         ],
       ),
