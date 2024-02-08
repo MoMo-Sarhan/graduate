@@ -25,19 +25,18 @@ class CustomDropDown extends StatefulWidget {
 class _CustomDropDownState extends State<CustomDropDown> {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Text(
-        widget.leading,
-        style: TextStyle(fontSize: 19),
-      ),
-      title: DropdownButtonFormField(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DropdownButtonFormField(
           validator: widget.validator,
           alignment: Alignment.centerLeft,
           isExpanded: widget.isEnabled,
           decoration: InputDecoration(
-            
               enabled: widget.isEnabled,
-              label: Text(widget.leading),
+              label: Text(
+                widget.leading,
+                style: const TextStyle(fontSize: 19),
+              ),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
           borderRadius: BorderRadius.circular(10),
@@ -47,10 +46,13 @@ class _CustomDropDownState extends State<CustomDropDown> {
                 value: item,
                 child: Text(
                   item,
-                  style: TextStyle(fontSize: 19, color: Colors.black),
+                  style: TextStyle(
+                    fontSize: 19,
+                    color: Colors.black,
+                  ),
                 ));
           }).toList(),
-          onChanged: widget.isEnabled ? widget.onChange:null),
+          onChanged: widget.isEnabled ? widget.onChange : null),
     );
   }
 }

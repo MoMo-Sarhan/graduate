@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
 import 'package:graduate/firebase_options.dart';
 
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         RegisterPage.ID: (context) => RegisterPage(),
+        LoginPage.ID:(context)=>LoginPage(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
