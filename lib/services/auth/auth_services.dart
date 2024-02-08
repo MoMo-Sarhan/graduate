@@ -40,6 +40,14 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  void SignInWithEmailAndPassword(
-      {required String email, required String password}) async {}
+  Future<UserCredential> SignInWithEmailAndPassword(
+      {required String email, required String password}) async {
+    try {
+      final user = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return user;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

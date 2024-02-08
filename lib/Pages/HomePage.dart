@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -9,9 +11,10 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Center(
           child: ElevatedButton(
-        child: Text('Log out'),
+        child:
+            Text(BlocProvider.of<LoginStateCubit>(context).currentUser!.email!),
         onPressed: () {
-          FirebaseAuth.instance.signOut();
+          BlocProvider.of<LoginStateCubit>(context).SignOut();
         },
       )),
     );

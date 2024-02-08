@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
   static const String ID = 'Register Page';
-  GlobalKey<FormState> formKey = GlobalKey();
+  final GlobalKey<FormState> formKey = GlobalKey();
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -365,6 +365,7 @@ class _RegisterPageState extends State<RegisterPage> {
       try {
         await BlocProvider.of<LoginStateCubit>(context)
             .SignUpWithEmailandPassword(user: user);
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));

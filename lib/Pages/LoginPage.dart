@@ -2,8 +2,10 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
 import 'package:graduate/component/custom_text_filed.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -107,8 +109,13 @@ class _LoginPageState extends State<LoginPage> {
                           style: ButtonStyle(
                               minimumSize:
                                   MaterialStatePropertyAll(Size(300, 40))),
-                          onPressed: () {
-                            widget.formKey.currentState!.validate();
+                          onPressed: () async {
+                            if (widget.formKey.currentState!.validate()) {
+                              await BlocProvider.of<LoginStateCubit>(context)
+                                  .signInWithEmailAndPassword(
+                                      email: _emailController.text,
+                                      password: _passwordController.text);
+                            }
                           },
                           child: Text('Log In'),
                         ),
