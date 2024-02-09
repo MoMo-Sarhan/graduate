@@ -7,14 +7,13 @@ import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/auth/auth_services.dart';
 
 class LoginStateCubit extends Cubit<SignUpState> {
-  LoginStateCubit() : super(NotLoginYet());
+  LoginStateCubit() : super(LoginState());
   final AuthService _authService = AuthService();
   User? currentUser;
 
   void checAuth() {
     currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) ;
-    emit(NotLoginYet());
+    if (currentUser == null) emit(NotLoginYet());
   }
 
   Future<void> SignOut() async {
