@@ -106,9 +106,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Center(
                         child: ElevatedButton(
-                          style: ButtonStyle(
+                          style:const ButtonStyle(
                               minimumSize:
-                                  MaterialStatePropertyAll(Size(300, 40))),
+                                 MaterialStatePropertyAll(Size(300, 40))),
                           onPressed: () async {
                             if (widget.formKey.currentState!.validate()) {
                               await BlocProvider.of<LoginStateCubit>(context)
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                                       password: _passwordController.text);
                             }
                           },
-                          child: Text('Log In'),
+                          child:const Text('Log In'),
                         ),
                       ),
                       const Spacer(),
