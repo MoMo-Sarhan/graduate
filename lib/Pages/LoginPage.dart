@@ -10,7 +10,7 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
   static const String ID = 'LoginPage';
- final GlobalKey<FormState> formKey = GlobalKey();
+  final GlobalKey<FormState> formKey = GlobalKey();
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -122,9 +122,9 @@ class _LoginPageState extends State<LoginPage> {
                                 showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                          title: const Center(
+                                          title: Center(
                                             child: Text(
-                                              'Wrong email or password',
+                                              "Wrong email or password ${e.toString()}",
                                               style: TextStyle(fontSize: 19),
                                             ),
                                           ),

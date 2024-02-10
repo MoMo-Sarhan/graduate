@@ -2,3 +2,5 @@
 // and return the state depend on the user
 
 //TODO - change the user name and the user in the posts
+
+//TODO -  rebuild the posts using future builder instead of stream builder

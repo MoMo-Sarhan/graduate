@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -100,17 +102,19 @@ class _RatingPageState extends State<RatingPage> {
             );
           }
           return Center(
-            child: Text(_getdata(snapshot.data!.docs).toString()),
+            child: Text(_getRateData(snapshot.data!.docs).toString()),
           );
         });
   }
 
-  double _getdata(List<DocumentSnapshot> docs) {
+  double _getRateData(List<DocumentSnapshot> docs) {
+    log(docs.length.toString());
     double allRate = 0;
+    int counter =  docs.length;
     for (var doc in docs) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       allRate += data['rate'];
     }
-    return allRate;
+    return allRate / counter;
   }
 }

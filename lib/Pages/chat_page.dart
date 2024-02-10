@@ -24,7 +24,7 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController _listMessageController = ScrollController();
   final currentUSer = FirebaseAuth.instance.currentUser!;
   String pageTitle = 'Me';
-  String? reciverId;
+  String? reciverId = FirebaseAuth.instance.currentUser?.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
