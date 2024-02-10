@@ -7,8 +7,8 @@ import 'package:graduate/models/post_card_model.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
 
 class PostCard extends StatefulWidget {
-  PostCard({super.key, required this.post});
-  PostCardModel post;
+ const PostCard({super.key, required this.post});
+final  PostCardModel post;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -26,7 +26,7 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color.fromARGB(255, 165, 168, 170),
+      color:const Color.fromARGB(255, 165, 168, 170),
       margin: const EdgeInsets.symmetric(
         vertical: 4,
       ),

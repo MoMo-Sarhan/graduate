@@ -1,16 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate/component/comment_card.dart';
 import 'package:graduate/models/comment_model.dart';
 import 'package:graduate/models/post_card_model.dart';
 
 class CommentsPage extends StatefulWidget {
-  CommentsPage({required this.post});
+  const CommentsPage({required this.post});
   static const String ID = 'CommentsPage';
-  PostCardModel post;
+ final PostCardModel post;
 
   @override
   State<CommentsPage> createState() => _CommentsPageState();
@@ -104,7 +103,7 @@ class _CommentsPageState extends State<CommentsPage> {
       await selectedPost.update({
         'commentNum': numComment,
       });
-      if (!postData!.data()!.containsKey('comments')) {}
+      if (!postData.data()!.containsKey('comments')) {}
       selectedPost.collection('comments').add({
         'uid': widget.post.userUid,
         'userName': widget.post.userName,
@@ -115,135 +114,3 @@ class _CommentsPageState extends State<CommentsPage> {
     }
   }
 }
-
-// // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_null_aware_operators
-
-// import 'dart:io';
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:image_picker/image_picker.dart';
-
-// class AddPostPage extends StatefulWidget {
-//   const AddPostPage({super.key});
-
-
-
-//   @override
-//   State<AddPostPage> createState() => _AddPostPageState();
-// }
-
-// class _AddPostPageState extends State<AddPostPage> {
-//   final TextEditingController _contentConroller = TextEditingController();
-//   String? imagePath;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.deepPurple,
-//       body: ListView(
-//         children: [
-//           SizedBox(
-//             height: 30,
-//           ),
-//           SizedBox(
-//             height: 50,
-//           ),
-//           CircleAvatar(
-//             radius: 150,
-//             backgroundColor: Colors.deepPurple,
-//             child: imagePath != null ? Image.file(File(imagePath!)) : null,
-//           ),
-//           Center(
-//             child: IconButton(
-//               onPressed: chooseImage,
-//               icon: Icon(
-//                 Icons.add_a_photo,
-//                 size: 50,
-//                 color: Colors.blue,
-//               ),
-//             ),
-//           ),
-//           SizedBox(
-//             height: 30,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   // load image
-//   Future<void> chooseImage() async {
-//     final pickedFile =
-//         await ImagePicker().pickImage(source: ImageSource.camera);
-//     if (pickedFile != null) {
-//       // You can now upload the picked image to Firebase Storage
-//       setState(() {
-//         imagePath = pickedFile.path;
-//       });
-//       print(imagePath);
-//     }
-//   }
-
-//   Future<void> addPost() async {
-//     User currentUser = FirebaseAuth.instance.currentUser!;
-//     CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-//     String uid = currentUser.uid;
-//     if (imagePath != null) {
-//       await uploadImage(imagePath!);
-//     }
-
-//     if (_contentConroller.text.isNotEmpty) {
-//       CollectionReference post = FirebaseFirestore.instance.collection('posts');
-//       await post.add({
-//         'userId': uid,
-//         'content': _contentConroller.text,
-//         'timestamp': Timestamp.now(),
-//         'likes': '0',
-//         'image': imagePath != null ? imagePath!.split('/').last : ''
-//       });
-//       Navigator.pop(context);
-//     }
-//   }
-
-//   Future<void> uploadImage(String filePath) async {
-//     FirebaseAuth auth = FirebaseAuth.instance;
-//     User? user = auth.currentUser;
-//     String imageName = filePath.split('/').last;
-
-//     if (user != null) {
-//       Reference storageRef = FirebaseStorage.instance
-//           .ref()
-//           .child('user_post_image/${user.uid}/$imageName');
-
-//       try {
-//         await storageRef.putFile(File(filePath));
-//         print('Image uploaded successfully');
-//       } catch (e) {
-//         print('Error uploading image: $e');
-//       }
-//     }
-//   }
-// }
-
-// // import 'package:flutter/material.dart';
-
-// // class CommentsPage extends StatefulWidget {
-// //   const CommentsPage({super.key});
-
-// //   static const String ID = 'CommentsPage';
-
-// //   @override
-// //   State<CommentsPage> createState() => _CommentsPageState();
-// // }
-
-// // class _CommentsPageState extends State<CommentsPage> {
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold();
-// //   }
-// // }

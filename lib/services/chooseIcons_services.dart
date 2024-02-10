@@ -1,9 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChooseIconService {
@@ -60,13 +59,12 @@ class ChooseIconService {
               .getDownloadURL();
         }
       } catch (e) {
-        print('Error getting user image URL: $e');
+        log('Error getting user image URL: $e');
         // Return a default image URL or handle the error as needed
         return await FirebaseStorage.instance
             .ref()
             .child('default-profile.jpg')
             .getDownloadURL();
-        ;
       }
     } else {
       // User not authenticated

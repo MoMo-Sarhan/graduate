@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +10,6 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/post_card_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/community_services.dart';
-import 'package:graduate/services/user_data_services.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});

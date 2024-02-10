@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:graduate/Pages/setting_pages/Change_icon_page.dart';
 import 'package:graduate/Pages/setting_pages/Language_page.dart';
@@ -7,8 +9,8 @@ import 'package:graduate/Pages/setting_pages/change_name_page.dart';
 import 'package:graduate/models/settingModel.dart';
 
 class Item extends StatefulWidget {
-  Item({required this.settingItem});
-  SettingModel settingItem;
+  const Item({super.key, required this.settingItem});
+  final SettingModel settingItem;
   @override
   State<Item> createState() => _ItemState();
 }
@@ -33,7 +35,7 @@ class _ItemState extends State<Item> {
       }
       if (widget.settingItem.text == 'Get Notifications') {
         notificationFlag = !notificationFlag;
-        print(notificationFlag);
+        log(notificationFlag.toString());
         widget.settingItem.icon_1 =
             notificationFlag ? Icons.notifications_active : Icons.notifications;
         widget.settingItem.icon_2 = notificationFlag

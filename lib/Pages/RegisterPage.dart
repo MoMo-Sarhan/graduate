@@ -378,6 +378,13 @@ class _RegisterPageState extends State<RegisterPage> {
             .SignUpWithEmailandPassword(user: user);
         Navigator.pop(context);
       } catch (e) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(e.toString()),
+              );
+            });
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
       }

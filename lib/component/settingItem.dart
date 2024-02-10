@@ -1,14 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
-import 'package:graduate/Pages/setting_pages/Change_icon_page.dart';
-import 'package:graduate/Pages/setting_pages/Language_page.dart';
-import 'package:graduate/Pages/setting_pages/Rating_Page.dart';
-import 'package:graduate/Pages/setting_pages/change_name_page.dart';
 import 'package:graduate/models/settingModel.dart';
 
 class Item extends StatefulWidget {
-  Item({required this.settingItem});
-  SettingModel settingItem;
+  const Item({required this.settingItem});
+  final SettingModel settingItem;
   @override
   State<Item> createState() => _ItemState();
 }

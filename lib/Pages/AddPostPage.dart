@@ -79,7 +79,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: ListView(
                     children: [
-                      Container(
+                     Container(
                         child: Text(content),
                       ),
                       const SizedBox(
@@ -136,12 +136,6 @@ class _AddPostPageState extends State<AddPostPage> {
               });
             },
           )
-          // TextField(
-          //   onChanged: (value) {
-          //     content = value;
-          //     setState(() {});
-          //   },
-          // ),
         ],
       ),
     );
@@ -164,27 +158,6 @@ class _AddPostPageState extends State<AddPostPage> {
     }
   }
 
-  // Future<void> addPost() async {
-  //   User currentUser = FirebaseAuth.instance.currentUser!;
-
-  //   String uid = currentUser.uid;
-  //   if (imagePath != null) {
-  //     await uploadImage(imagePath!);
-  //   }
-
-  //   if (_contentConroller.text.isNotEmpty) {
-  //     CollectionReference post = FirebaseFirestore.instance.collection('posts');
-  //     await post.add({
-  //       'userId': uid,
-  //       'content': _contentConroller.text,
-  //       'timestamp': Timestamp.now(),
-  //       'likes': '0',
-  //       'image': imagePath != null ? imagePath!.split('/').last : ''
-  //     });
-  //     Navigator.pop(context);
-  //   }
-  // }
-
   Future<String?> uploadImage(String filePath) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
@@ -204,5 +177,6 @@ class _AddPostPageState extends State<AddPostPage> {
         return null;
       }
     }
+    return null;
   }
 }

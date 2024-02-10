@@ -1,10 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class CustomTextFormFiled extends StatelessWidget {
-  CustomTextFormFiled({
+ const CustomTextFormFiled({
     super.key,
     required this.hintText,
     required this.label,
@@ -16,15 +15,15 @@ class CustomTextFormFiled extends StatelessWidget {
     this.suffixIcon,
     this.prefixIcon,
   });
-  String hintText;
-  String label;
-  TextEditingController controller;
-  String? Function(dynamic)? validator;
-  Function(String)? onChange;
-  Widget? suffixIcon;
-  Widget? prefixIcon;
-  bool obscureText;
-  bool isEnabled;
+  final String hintText;
+  final String label;
+  final TextEditingController controller;
+  final String? Function(dynamic)? validator;
+  final Function(String)? onChange;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final bool obscureText;
+ final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {

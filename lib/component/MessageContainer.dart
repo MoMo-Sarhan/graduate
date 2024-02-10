@@ -2,8 +2,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate/helper/get_time_formate.dart';
 
@@ -19,17 +17,6 @@ class MessageContainer extends StatelessWidget {
   final String message;
   final bool alignment;
   final Timestamp time;
-
-  // String getTime() {
-  //   DateTime timeData = time.toDate();
-  //   int hour = timeData.hour;
-  //   int second = timeData.second;
-  //   int day = timeData.day;
-  //   int month = timeData.month;
-  //   int year = timeData.year;
-  //   return '$hour:$second $day/$month/$year';
-  // }
-
   final currentUser = FirebaseAuth.instance.currentUser!;
 
   @override
