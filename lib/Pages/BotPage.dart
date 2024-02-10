@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/component/CustomInputFiled.dart';
+import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 
 class BotPage extends StatefulWidget {
   const BotPage({super.key});
@@ -26,6 +28,9 @@ class _BotPageState extends State<BotPage> {
         children: [
           Center(
               child: Image(
+            color: BlocProvider.of<ModeStateCubit>(context).mode
+                ? Colors.white
+                : Colors.black,
             image: AssetImage('assets/icons/chatbot.png'),
             height: MediaQuery.of(context).size.height / 10,
             width: MediaQuery.of(context).size.width / 10,

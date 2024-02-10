@@ -3,6 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/helper/get_time_formate.dart';
 
 class MessageContainer extends StatelessWidget {
@@ -29,15 +31,15 @@ class MessageContainer extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20),
-                  topLeft: Radius.circular(20),
-                  bottomRight: !alignment ? Radius.circular(20) : Radius.zero,
-                  bottomLeft: alignment ? Radius.circular(20) : Radius.zero,
-                ),
-                color: alignment
-                    ? Color.fromARGB(255, 216, 193, 126)
-                    : Color.fromARGB(255, 140, 153, 228)),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20),
+                bottomRight: !alignment ? Radius.circular(20) : Radius.zero,
+                bottomLeft: alignment ? Radius.circular(20) : Radius.zero,
+              ),
+              color:
+                  alignment ? Colors.grey : Color.fromARGB(255, 131, 129, 129),
+            ),
             child: IntrinsicWidth(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +52,11 @@ class MessageContainer extends StatelessWidget {
                       children: [
                         Text(
                           getTime(time),
-                          style: TextStyle(color: Colors.blueGrey),
+                          style: TextStyle(
+                              color:
+                                  BlocProvider.of<ModeStateCubit>(context).mode
+                                      ? Colors.black
+                                      : Colors.white),
                         ),
                       ],
                     )
