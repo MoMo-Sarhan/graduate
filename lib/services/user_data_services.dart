@@ -11,7 +11,7 @@ class UserServices {
   Future<UserModel?> getStudentData({required String uid}) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> doc =
-          await _firebaseFirestore.collection('Students').doc(uid).get();
+          await _firebaseFirestore.collection('users').doc(uid).get();
       if (doc.exists) {
         log('exits');
         return UserModel.fromDocs(doc);
@@ -54,5 +54,20 @@ class UserServices {
       log(e.toString());
       throw Exception(e);
     }
+  }
+
+  Future<void> rateApp({required double rate, required String uid}) async {
+    try {
+      await _firebaseFirestore.collection('Rate').doc(uid).set({
+        'rate': rate,
+        'uid': uid,
+      }, SetOptions(merge: true));
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Stream<QuerySnapshot> getRate() {
+    return _firebaseFirestore.collection('Rate').snapshots();
   }
 }

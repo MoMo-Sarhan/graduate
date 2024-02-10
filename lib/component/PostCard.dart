@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:graduate/Pages/CommentsPage.dart';
 import 'package:graduate/helper/get_time_formate.dart';
 import 'package:graduate/models/post_card_model.dart';
+import 'package:graduate/services/chooseIcons_services.dart';
 
 class PostCard extends StatefulWidget {
-  PostCard({required this.post});
+  PostCard({super.key, required this.post});
   PostCardModel post;
 
   @override
@@ -13,46 +15,47 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  bool flage = false;
+  bool? flage = false;
 
   @override
   void initState() {
     super.initState();
+    flage = widget.post.ifIsLiked!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color.fromARGB(255, 149, 179, 207),
-      margin: EdgeInsets.symmetric(
+      color: Color.fromARGB(255, 165, 168, 170),
+      margin: const EdgeInsets.symmetric(
         vertical: 4,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ListTile(
-            tileColor: Color.fromARGB(255, 10, 77, 139),
-            leading: CircleAvatar(
-                backgroundImage:const AssetImage('assets/images/bg1.jpeg')),
+            tileColor: const Color.fromARGB(255, 202, 200, 200),
+            leading: _buildCircualarAvatar(),
             title: Text(
-                widget.post.userUid), // Replace with the post author's name
+                widget.post.userName), // Replace with the post author's name
             subtitle: Text(
               getTime(widget.post.time),
-              style: TextStyle(color: Colors.amber),
+              style: const TextStyle(color: Colors.amber),
             ), // Replace with post timestamp
             trailing: IconButton(
-              icon: Icon(Icons.more_horiz),
+              icon: const Icon(Icons.more_horiz),
               onPressed: () {},
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
               widget.post.content,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
-          if (widget.post.imagePath != null)
+          if (widget.post.imagePath != null &&
+              widget.post.imagePath!.isNotEmpty)
             Image.network(widget.post.imagePath!),
           ButtonBar(
             children: [
@@ -60,24 +63,22 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 icon: Icon(
                   Icons.thumb_up,
-                  color: flage! ? Colors.blue : Colors.black,
+                  color: flage != null && flage! ? Colors.blue : Colors.black,
                 ),
-                onPressed: () {
-                  setState(() {
-                    flage = !flage!;
-                    // addLike();
-                  });
+                onPressed: () async {
+                  flage = !flage!;
+                  await addLike(postId: widget.post.postId!);
                   // Handle like button action
                 },
               ),
               Text(widget.post.commentNum.toString()),
               IconButton(
-                icon: Icon(Icons.comment),
+                icon: const Icon(Icons.comment),
                 onPressed: () {
                   // Handle comment button action
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return CommentsPage(postId: widget.post.postId,);
-                  // }));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CommentsPage(post: widget.post);
+                  }));
                 },
               ),
             ],
@@ -87,7 +88,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Future<void> addLike() async {
+  Future<void> addLike({required String postId}) async {
     int newlikes = widget.post.likes;
     if (flage!) {
       newlikes = newlikes + 1;
@@ -95,29 +96,44 @@ class _PostCardState extends State<PostCard> {
       newlikes = newlikes - 1;
     }
     widget.post.likes = newlikes;
-    var selectedPost =
-        FirebaseFirestore.instance.collection('posts').doc(widget.post.postId);
-    await selectedPost.update({'likes': newlikes.toString()});
+    var selectedPost = FirebaseFirestore.instance
+        .collection(widget.post.collection!)
+        .doc(postId);
+    await selectedPost.update({'likes': newlikes});
 
     // add the user in the likesid filed
     // get the fileds of the post
     var posts = await selectedPost.get();
     final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
-    if (posts.data()!.containsKey('likesId')) {
-      List<dynamic> likesId = posts['likesId'];
+    if (posts.data()!.containsKey('likesList')) {
+      List<dynamic> likesId = posts['likesList'];
       if (!flage!) {
         likesId.remove(currentUserId);
       } else {
         likesId.add(currentUserId);
       }
       selectedPost.update({
-        'likesId': likesId,
+        'likesList': likesId,
       });
     } else {
       selectedPost.update({
-        'likesId': <String>[currentUserId],
+        'likesList': <dynamic>[currentUserId],
       });
     }
+  }
+
+  Widget _buildCircualarAvatar() {
+    return FutureBuilder(
+      future: ChooseIconService().getImageByUid(uid: widget.post.userUid),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return const Icon(Icons.error);
+        }
+        return CircleAvatar(backgroundImage: NetworkImage(snapshot.data!));
+      },
+    );
   }
 }

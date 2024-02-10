@@ -5,10 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/Pages/AddPostPage.dart';
+import 'package:graduate/Pages/chat_page.dart';
 import 'package:graduate/component/PostCard.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
-import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
-import 'package:graduate/helper/constatn.dart';
 import 'package:graduate/models/post_card_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/community_services.dart';
@@ -22,7 +22,6 @@ class CommunityPage extends StatefulWidget {
 }
 
 class _CommunityPageState extends State<CommunityPage> {
-  final StreamController _controller = StreamController<int>();
   List<int> dataList = [];
 
   @override
@@ -31,7 +30,11 @@ class _CommunityPageState extends State<CommunityPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('${userModel.level} ${userModel.department}'),
+        title: Text(userModel.isGeneral()
+            ? 'General'
+            : userModel.isStudent() && userModel.level! < 2
+                ? '${userModel.level}'
+                : '${userModel.level} ${userModel.department}'),
         actions: [
           IconButton(
             onPressed: () {},
@@ -41,7 +44,9 @@ class _CommunityPageState extends State<CommunityPage> {
             iconSize: 24,
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, AddPostPage.ID);
+            },
             icon: const Icon(Icons.add),
             iconSize: 35,
           )
@@ -61,35 +66,34 @@ class _CommunityPageState extends State<CommunityPage> {
           }
           List<PostCardModel> posts = [];
           for (var doc in snapshot.data!.docs) {
-            posts.add(PostCardModel.fromDoc(doc: doc, postId: doc.id));
+            bool ifisLiked = false;
+            String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+            List<dynamic> likesList = doc['likesList'];
+            if (likesList.contains(currentUserId)) ifisLiked = true;
+
+            posts.add(PostCardModel.fromDoc(
+              doc: doc,
+              postId: doc.id,
+              ifIsLiked: ifisLiked,
+            ));
           }
           return ListView.builder(
+              physics: const BouncingScrollPhysics(),
               itemCount: posts.length,
               itemBuilder: (context, index) {
-                return PostCard(post: posts[index]);
+                return PostCard(
+                  post: posts[index],
+                  key: ValueKey(posts[index].postId),
+                );
               });
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          UserModel? user = await UserServices()
-              .getStudentData(uid: FirebaseAuth.instance.currentUser!.uid);
-          log(FirebaseAuth.instance.currentUser!.uid);
-          await CommunityServices().addPost(
-              user: user,
-              post: PostCardModel(
-                  userUid: FirebaseAuth.instance.currentUser!.uid,
-                  time: Timestamp.now(),
-                  content: 'mohamed sarhan',
-                  likes: 0,
-                  postId: '',
-                  ifIsLiked: true,
-                  commentNum: 0,
-                  commentsList: [],
-                  likesList: []));
+        onPressed: () {
+          Navigator.pushNamed(context, ChatPage.ID);
         },
         child: const Icon(
-          Icons.chat,
+          Icons.chat_bubble_outline_sharp,
           size: 37,
         ),
       ),

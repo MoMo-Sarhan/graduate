@@ -2,9 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/Pages/AddPostPage.dart';
+import 'package:graduate/Pages/CommentsPage.dart';
 import 'package:graduate/Pages/MainPage.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
+import 'package:graduate/Pages/chat_page.dart';
+import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
+import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/cubits/Navigation_cubits/navigation_cubit.dart';
@@ -30,15 +35,26 @@ class MyApp extends StatelessWidget {
         BlocProvider<LoginStateCubit>(
             create: (context) => LoginStateCubit()..checAuth()),
         BlocProvider<NavigationCubit>(create: (context) => NavigationCubit()),
+        BlocProvider<ModeStateCubit>(create: (context) => ModeStateCubit())
       ],
       child: Builder(builder: (context) {
-        return MaterialApp(
-          routes: {
-            RegisterPage.ID: (context) => RegisterPage(),
-            LoginPage.ID: (context) => LoginPage(),
+        return BlocBuilder<ModeStateCubit, ModeState>(
+          builder: (context, state) {
+            return MaterialApp(
+              theme: ThemeData(
+                brightness:
+                    state is DarkModeState ? Brightness.dark : Brightness.light,
+              ),
+              routes: {
+                RegisterPage.ID: (context) => RegisterPage(),
+                LoginPage.ID: (context) => LoginPage(),
+                AddPostPage.ID: (context) => AddPostPage(),
+                ChatPage.ID: (context) => ChatPage(),
+              },
+              debugShowCheckedModeBanner: false,
+              home: AuthGate(),
+            );
           },
-          debugShowCheckedModeBanner: false,
-          home: AuthGate(),
         );
       }),
     );

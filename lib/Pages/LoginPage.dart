@@ -106,18 +106,34 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Center(
                         child: ElevatedButton(
-                          style:const ButtonStyle(
+                          style: const ButtonStyle(
                               minimumSize:
-                                 MaterialStatePropertyAll(Size(300, 40))),
+                                  MaterialStatePropertyAll(Size(300, 40))),
                           onPressed: () async {
                             if (widget.formKey.currentState!.validate()) {
-                              await BlocProvider.of<LoginStateCubit>(context)
-                                  .signInWithEmailAndPassword(
-                                      email: _emailController.text,
-                                      password: _passwordController.text);
+                              try {
+                                await BlocProvider.of<LoginStateCubit>(context)
+                                    .signInWithEmailAndPassword(
+                                        email: _emailController.text,
+                                        password: _passwordController.text);
+                              } catch (e) {
+                                // ignore: use_build_context_synchronously
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: const Center(
+                                            child: Text(
+                                              'Wrong email or password',
+                                              style: TextStyle(fontSize: 19),
+                                            ),
+                                          ),
+                                          content: Image.asset(
+                                              'assets/images/rate_icons/3.png'),
+                                        ));
+                              }
                             }
                           },
-                          child:const Text('Log In'),
+                          child: const Text('Log In'),
                         ),
                       ),
                       const Spacer(),

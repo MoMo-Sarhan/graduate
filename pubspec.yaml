@@ -40,6 +40,10 @@ dependencies:
   provider: ^6.1.1
   flutter_bloc: ^8.1.3
   google_nav_bar: ^5.0.6
+  image_picker: ^1.0.7
+  firebase_storage: ^11.6.5
+  file_picker: ^6.1.1
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +71,7 @@ flutter:
     - assets/icons/
     - assets/fonts/
     - assets/images/
+    - assets/images/rate_icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

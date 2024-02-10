@@ -19,7 +19,13 @@ class LoginStateCubit extends Cubit<SignUpState> {
       emit(NotLoginYet());
     } else {
       userModel = await UserServices().getStudentData(uid: currentUser!.uid);
-      emit(LoginState());
+      if (userModel!.isDoctor()) {
+        emit(SignUpAsDoctor());
+      } else if (userModel!.isStudent()) {
+        emit(SignUpAsStudent());
+      } else if (userModel!.isGeneral()) {
+        emit(SignUpAsGeneral());
+      }
     }
   }
 
@@ -36,7 +42,14 @@ class LoginStateCubit extends Cubit<SignUpState> {
     userModel = await UserServices()
         .getStudentData(uid: FirebaseAuth.instance.currentUser!.uid);
     currentUser = user.user;
-    emit(LoginState());
+
+    if (userModel!.isDoctor()) {
+      emit(SignUpAsDoctor());
+    } else if (userModel!.isStudent()) {
+      emit(SignUpAsStudent());
+    } else if (userModel!.isGeneral()) {
+      emit(SignUpAsGeneral());
+    }
   }
 
   Future<void> SignUpWithEmailandPassword({required UserModel user}) async {

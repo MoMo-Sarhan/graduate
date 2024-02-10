@@ -10,11 +10,15 @@ class AuthService {
 
   Future<UserCredential> SignUpWithEmailAndPassword(
       {required UserModel user}) async {
-    String collection = user.isGeneral()
-        ? "General"
-        : user.isStudent()
-            ? "Students"
-            : "Doctors";
+    // String collection;
+    // if (user.isGeneral())
+    //   collection = 'General';
+    // else if (user.isDoctor())
+    //   collection = 'Doctors';
+    // else {
+    //   collection = '${user.userType}Level_${user.level}_${user.department}';
+    // }
+    String collection = 'users';
     try {
       UserCredential newUser =
           await _firebaseAuth.createUserWithEmailAndPassword(

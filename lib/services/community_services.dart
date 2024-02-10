@@ -24,7 +24,10 @@ class CommunityServices {
         collection = 'StudentPostsLevel_${user.level}_${user.department}';
       }
       try {
-        return _firebaseFirestore.collection(collection).snapshots();
+        return _firebaseFirestore
+            .collection(collection)
+            .orderBy('time', descending: true)
+            .snapshots();
       } catch (e) {
         log(e.toString());
         return const Stream.empty();
@@ -47,6 +50,7 @@ class CommunityServices {
         await _firebaseFirestore.collection(collection).doc().set({
           'content': post.content,
           'userUid': post.userUid,
+          'userName': user.getFullName(),
           'commentNum': post.commentNum,
           'commentsList': post.commentsList,
           'time': post.time,
@@ -54,6 +58,8 @@ class CommunityServices {
           'likes': post.likes,
           'file': post.file,
           'ifIsLiked': post.ifIsLiked,
+          'collection': collection,
+          'likesList': post.likesList,
         });
       } catch (e) {
         log(e.toString());
@@ -61,5 +67,21 @@ class CommunityServices {
     } else {
       log('user is null');
     }
+  }
+
+  Future<String> getUserFullName(
+      {required String uid, required UserModel userModel}) async {
+    String collection;
+    if (userModel.isStudent()) {
+      collection = 'Students';
+    } else if (userModel.isDoctor()) {
+      collection = 'Doctors';
+    } else {
+      collection = 'Generals';
+    }
+    var userDoc =
+        await _firebaseFirestore.collection(collection).doc(uid).get();
+    UserModel userData = UserModel.fromDocs(userDoc);
+    return userData.getFullName();
   }
 }
