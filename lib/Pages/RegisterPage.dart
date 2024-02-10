@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
   static const String ID = 'Register Page';
-  GlobalKey<FormState> formKey = GlobalKey();
+  final GlobalKey<FormState> formKey = GlobalKey();
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -177,21 +177,23 @@ class _RegisterPageState extends State<RegisterPage> {
                           onChange: (data) {
                             log(_gpaController.text);
                           },
-                          validator: (value) {
-                            double x;
-                            try {
-                              x = double.parse(value);
-                            } on FormatException {
-                              return 'Enter right gpa';
-                            } catch (e) {
-                              return e.toString();
-                            }
+                          validator: userType == 'Student'
+                              ? (value) {
+                                  double x;
+                                  try {
+                                    x = double.parse(value);
+                                  } on FormatException {
+                                    return 'Enter right gpa';
+                                  } catch (e) {
+                                    return e.toString();
+                                  }
 
-                            if (x < 0 || x > 4) {
-                              return 'Enter  GPA between 0 and 4';
-                            }
-                            return null;
-                          },
+                                  if (x < 0 || x > 4) {
+                                    return 'Enter  GPA between 0 and 4';
+                                  }
+                                  return null;
+                                }
+                              : null,
                           controller: _gpaController,
                           label: 'GPA',
                           hintText: 'GPA',
@@ -205,21 +207,23 @@ class _RegisterPageState extends State<RegisterPage> {
                           onChange: (data) {
                             log(_levelController.text);
                           },
-                          validator: (value) {
-                            int x;
-                            try {
-                              x = int.parse(value);
-                            } on FormatException {
-                              return 'Enter level';
-                            } catch (e) {
-                              return e.toString();
-                            }
+                          validator: userType != 'Student'
+                              ? null
+                              : (value) {
+                                  int x;
+                                  try {
+                                    x = int.parse(value);
+                                  } on FormatException {
+                                    return 'Enter level';
+                                  } catch (e) {
+                                    return e.toString();
+                                  }
 
-                            if (x < 1 || x > 4) {
-                              return 'Enter  Level between 1 and 4';
-                            }
-                            return null;
-                          },
+                                  if (x < 1 || x > 4) {
+                                    return 'Enter  Level between 1 and 4';
+                                  }
+                                  return null;
+                                },
                           controller: _levelController,
                           label: 'Level',
                           hintText: 'Level',
@@ -356,16 +360,31 @@ class _RegisterPageState extends State<RegisterPage> {
           email: _emailController.text,
           phone: _phoneNumberController.text,
           userType: userType,
-          profileIcon: '',
-          level: int.parse(_levelController.text),
-          gpa: double.parse(_gpaController.text),
-          department: department,
+          profileIcon:
+              'https://firebasestorage.googleapis.com/v0/b/graduate-40eb5.appspot.com/o/default-profile.jpg?alt=media&token=30b6038b-6a47-4b33-be09-b7ba5eae018a',
+          level: int.tryParse(_levelController.text),
+          gpa: _gpaController.text.isNotEmpty
+              ? double.parse(_gpaController.text)
+              : null,
+          department: int.tryParse(_levelController.text) == null ||
+                  int.tryParse(_levelController.text)! < 3 ||
+                  userType != 'Student'
+              ? null
+              : department,
           password: _passwordController.text);
 
       try {
         await BlocProvider.of<LoginStateCubit>(context)
             .SignUpWithEmailandPassword(user: user);
+        Navigator.pop(context);
       } catch (e) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(e.toString()),
+              );
+            });
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
       }

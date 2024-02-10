@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomDropDown extends StatefulWidget {
-  CustomDropDown({
+ const CustomDropDown({
     super.key,
     required this.validator,
     required this.items,
@@ -11,12 +11,12 @@ class CustomDropDown extends StatefulWidget {
     required this.isEnabled,
   });
 
-  String? Function(dynamic?) validator;
-  List<String> items;
-  String value;
-  String leading;
-  Function(String?)? onChange;
-  bool isEnabled;
+final  String? Function(dynamic) validator;
+  final List<String> items;
+  final String value;
+  final String leading;
+  final Function(String?)? onChange;
+  final bool isEnabled;
 
   @override
   State<CustomDropDown> createState() => _CustomDropDownState();
@@ -46,7 +46,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                 value: item,
                 child: Text(
                   item,
-                  style: TextStyle(
+                  style:const TextStyle(
                     fontSize: 19,
                     color: Colors.black,
                   ),

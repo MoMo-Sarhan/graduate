@@ -2,13 +2,15 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
 import 'package:graduate/component/custom_text_filed.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
   static const String ID = 'LoginPage';
-  GlobalKey<FormState> formKey = GlobalKey();
+ final GlobalKey<FormState> formKey = GlobalKey();
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -68,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                           if (value!.isEmpty) {
                             return 'Please Enter Email';
                           }
+                          return null;
                         },
                         onChange: (value) {},
                         obscureText: false,
@@ -104,13 +107,34 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Center(
                         child: ElevatedButton(
-                          style: ButtonStyle(
+                          style: const ButtonStyle(
                               minimumSize:
                                   MaterialStatePropertyAll(Size(300, 40))),
-                          onPressed: () {
-                            widget.formKey.currentState!.validate();
+                          onPressed: () async {
+                            if (widget.formKey.currentState!.validate()) {
+                              try {
+                                await BlocProvider.of<LoginStateCubit>(context)
+                                    .signInWithEmailAndPassword(
+                                        email: _emailController.text,
+                                        password: _passwordController.text);
+                              } catch (e) {
+                                // ignore: use_build_context_synchronously
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: const Center(
+                                            child: Text(
+                                              'Wrong email or password',
+                                              style: TextStyle(fontSize: 19),
+                                            ),
+                                          ),
+                                          content: Image.asset(
+                                              'assets/images/rate_icons/3.png'),
+                                        ));
+                              }
+                            }
                           },
-                          child: Text('Log In'),
+                          child: const Text('Log In'),
                         ),
                       ),
                       const Spacer(),

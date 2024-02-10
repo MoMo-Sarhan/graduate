@@ -8,42 +8,40 @@ class UserModel {
   final String userType;
   final String? department;
   final double? gpa;
-  final String password;
+  final String? password;
   final String profileIcon;
   final int? level;
-  final List<String>? Courses;
+  final List<String>? courses;
 
-  UserModel({
-    this.uid,
-    required this.firstName,
-    required this.lastName,
-    required this.gender,
-    required this.email,
-    required this.phone,
-    required this.userType,
-    required this.profileIcon,
-    required this.password,
-    this.level,
-    this.gpa,
-    this.Courses,
-    this.department,
-  });
+  UserModel(
+      {this.uid,
+      required this.firstName,
+      required this.lastName,
+      required this.gender,
+      required this.email,
+      required this.phone,
+      required this.userType,
+      required this.profileIcon,
+      this.level,
+      this.gpa,
+      this.courses,
+      this.department,
+      this.password});
 
   factory UserModel.fromDocs(data) {
     return UserModel(
-      uid: data['id'],
+      uid: data['uid'],
       firstName: data['firstName'],
       lastName: data['lastName'],
       gender: data['gender'],
       email: data['email'],
-      phone: data['email'],
+      phone: data['phone'],
       userType: data['userType'],
       profileIcon: data['profileIcon'],
-      password: data['password'],
       gpa: data['gpa'],
       department: data['department'],
       level: data['level'],
-      Courses: data['courses'],
+      // courses: data['courses'],
     );
   }
   bool isStudent() => userType == 'Student' ? true : false;
