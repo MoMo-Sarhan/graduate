@@ -8,6 +8,7 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
+import 'package:graduate/services/user_data_services.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -42,25 +43,13 @@ class _ChatPageState extends State<ChatPage> {
         Expanded(
           child: _buildListMessage(),
         ),
-
         _buildMessageInputField(),
-        // TextField(
-        //   controller: _messageController,
-        //   onSubmitted: (value) {
-        //     ChatServices().sendMessage(reciverId!, _messageController.text);
-        //     _messageController.clear();
-        //   },
-        // )
       ]),
       drawer: Drawer(
         child: Column(
           children: [
-            const SafeArea(
-              child: Icon(
-                Icons.person,
-                size: 300,
-              ),
-            ),
+            _drawerImage(),
+            _buildUserInfo(),
             Expanded(child: _buildUserList()),
           ],
         ),
@@ -70,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageInputField() {
     return CustomMessageFiled(
-    onChange: (value){},
+      onChange: (value) {},
       messageController: _messageController,
       onPressed: () async {
         if (_messageController.text.isNotEmpty) {
@@ -193,6 +182,69 @@ class _ChatPageState extends State<ChatPage> {
           }
           return CircleAvatar(
             backgroundImage: NetworkImage(snapshot.data!),
+          );
+        });
+  }
+
+  Widget _drawerImage() {
+    return FutureBuilder(
+        future: _chooseIconService.getImageByUid(
+            uid: reciverId ?? FirebaseAuth.instance.currentUser!.uid),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text("Oops something went wrong!"),
+            );
+          }
+          return Container(
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                  snapshot.data!,
+                ),
+                fit: BoxFit.fill,
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget _buildUserInfo() {
+    return FutureBuilder(
+        future: UserServices().getStudentData(uid: reciverId!),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error'),
+            );
+          }
+          return Column(
+            children: [
+              ListTile(
+                title: Center(child: Text(snapshot.data!.getFullName())),
+              ),
+              ListTile(
+                leading: Icon(Icons.phone),
+                title: Text(snapshot.data!.phone.toString()),
+              ),
+              ListTile(
+                leading: Icon(Icons.email),
+                title: Text(
+                  snapshot.data!.email,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            ],
           );
         });
   }
