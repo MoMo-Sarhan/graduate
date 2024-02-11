@@ -16,7 +16,7 @@ class ChooseIconService {
     if (pickedFile != null) {
       // You can now upload the picked image to Firebase Storage
       String imagePath = pickedFile.path;
-      uploadImage(imagePath);
+      await uploadImage(imagePath);
       return imagePath;
     }
     return null;

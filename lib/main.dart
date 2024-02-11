@@ -10,7 +10,7 @@ import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Navigation_cubits/navigation_cubit.dart';
 import 'package:graduate/firebase_options.dart';
-import 'package:graduate/helper/AuthGate.dart';
+import 'package:graduate/Pages/AuthGate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

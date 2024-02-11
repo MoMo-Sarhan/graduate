@@ -23,3 +23,19 @@ Future<String> getUserName(String uid) async {
   }
   return null!;
 }
+
+bool isImage({required String text}) {
+  return (text.endsWith('.jpg') || text.endsWith('jpeg'));
+}
+
+bool isPdfFile({required String text}) {
+  return text.endsWith('.pdf');
+}
+
+bool isTextFile({required String text}) {
+  return text.endsWith('.txt');
+}
+
+bool isFile({required String text}) {
+  return isPdfFile(text: text) || isImage(text: text) || isTextFile(text: text);
+}
