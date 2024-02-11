@@ -9,7 +9,7 @@ import 'package:graduate/models/post_card_model.dart';
 class CommentsPage extends StatefulWidget {
   const CommentsPage({required this.post});
   static const String ID = 'CommentsPage';
- final PostCardModel post;
+  final PostCardModel post;
 
   @override
   State<CommentsPage> createState() => _CommentsPageState();
@@ -20,7 +20,9 @@ class _CommentsPageState extends State<CommentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 204, 203, 203),
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 204, 203, 203),
         title: Text('Comments'),
         centerTitle: true,
       ),

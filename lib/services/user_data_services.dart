@@ -8,19 +8,23 @@ class UserServices {
   final _firebaseFirestore = FirebaseFirestore.instance;
   final _currentUser = FirebaseAuth.instance.currentUser;
 
-  Future<UserModel?> getStudentData({required String uid}) async {
-    try {
-      DocumentSnapshot<Map<String, dynamic>> doc =
-          await _firebaseFirestore.collection('users').doc(uid).get();
-      if (doc.exists) {
-        log('exits');
-        return UserModel.fromDocs(doc);
-      } else {
-        log('not exits');
+  Future<UserModel?> getStudentData({required String? uid}) async {
+    if (uid != null) {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> doc =
+            await _firebaseFirestore.collection('users').doc(uid).get();
+        if (doc.exists) {
+          log('exits');
+          return UserModel.fromDocs(doc);
+        } else {
+          log('not exits');
+          return null;
+        }
+      } catch (e) {
+        log(e.toString());
         return null;
       }
-    } catch (e) {
-      log(e.toString());
+    } else {
       return null;
     }
   }

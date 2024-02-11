@@ -15,13 +15,13 @@ class _CommentCardState extends State<CommentCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color.fromARGB(255, 149, 179, 207),
+      color: const Color.fromARGB(255, 117, 116, 116),
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ListTile(
-            tileColor: Color.fromARGB(255, 10, 77, 139),
+            tileColor: Colors.grey,
             // leading: CircleAvatar(
             //   // You can replace this with user profile image
 
@@ -30,7 +30,7 @@ class _CommentCardState extends State<CommentCard> {
                 widget.comment.userName), // Replace with the post author's name
             subtitle: Text(
               getTime(widget.comment.time),
-              style: TextStyle(color: Colors.amber),
+              style: TextStyle(color: Colors.white),
             ), // Replace with post timestamp
             trailing: IconButton(
               icon: Icon(Icons.more_horiz),

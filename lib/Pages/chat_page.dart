@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/component/CustomInputFiled.dart';
 import 'package:graduate/component/MessageContainer.dart';
+import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
+import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
@@ -24,7 +26,7 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController _listMessageController = ScrollController();
   final currentUSer = FirebaseAuth.instance.currentUser!;
   String pageTitle = 'Me';
-  String? reciverId;
+  String? reciverId = FirebaseAuth.instance.currentUser?.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,7 +156,10 @@ class _ChatPageState extends State<ChatPage> {
       )),
       title: Text(
         friend.getFullName(),
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(
+            color: BlocProvider.of<ModeStateCubit>(context).mode
+                ? Colors.white
+                : Colors.black),
       ),
       onTap: () {
         setState(() {

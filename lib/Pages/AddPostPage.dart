@@ -79,7 +79,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: ListView(
                     children: [
-                     Container(
+                      Container(
                         child: Text(content),
                       ),
                       const SizedBox(
@@ -129,7 +129,35 @@ class _AddPostPageState extends State<AddPostPage> {
           ),
           CustomMessageFiled(
             messageController: _contentConroller,
-            onPressed: () {},
+            onPressed: () async {
+              if (content.isNotEmpty || imagePath != null) {
+                String userUid = FirebaseAuth.instance.currentUser!.uid;
+                String? imageUrl;
+                UserModel user =
+                    BlocProvider.of<LoginStateCubit>(context).userModel!;
+                if (imagePath != null) {
+                  imageUrl = await uploadImage(imagePath!);
+                }
+                PostCardModel post = PostCardModel(
+                  userName: user.getFullName(),
+                  userUid: userUid,
+                  time: Timestamp.now(),
+                  content: content,
+                  imagePath: imageUrl,
+                  likes: 0,
+                  postId: '',
+                  commentNum: 0,
+                  commentsList: [],
+                  file: '',
+                  likesList: [],
+                  ifIsLiked: false,
+                  // file: ,
+                );
+                _contentConroller.clear();
+                await CommunityServices().addPost(post: post, user: user);
+                Navigator.pop(context);
+              }
+            },
             onChange: (value) {
               setState(() {
                 content = value;
