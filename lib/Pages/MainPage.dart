@@ -27,21 +27,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     List<MyBottomBarModel> buttonsBar = [];
     List<Widget> pages = [];
-    // [
-    //   MyBottomBarModel(
-    //       icon: Icons.home, label: 'home', onpressed: () {}, index: 0),
-    //   MyBottomBarModel(
-    //       icon: Icons.people_alt,
-    //       label: 'community',
-    //       onpressed: () {},
-    //       index: 1),
-    //   MyBottomBarModel(
-    //       icon: Icons.rocket, label: 'bot', onpressed: () {}, index: 2),
-    //   MyBottomBarModel(
-    //       icon: Icons.book_sharp, label: 'Courses', onpressed: () {}, index: 3),
-    //   MyBottomBarModel(
-    //       icon: Icons.person, label: 'profile', onpressed: () {}, index: 4)
-    // ];
+    
     return BlocBuilder<LoginStateCubit, SignUpState>(
       builder: (context, state) {
         if (state is SignUpAsGeneral) {
@@ -61,7 +47,7 @@ class _MainPageState extends State<MainPage> {
                 onpressed: () {},
                 index: 3)
           ]);
-          pages.addAll([
+          pages.addAll(const [
             HomePage(),
             CommunityPage(),
             BotPage(),
@@ -89,7 +75,7 @@ class _MainPageState extends State<MainPage> {
                 onpressed: () {},
                 index: 4)
           ]);
-          pages.addAll([
+          pages.addAll(const [
             HomePage(),
             CommunityPage(),
             BotPage(),
@@ -101,6 +87,7 @@ class _MainPageState extends State<MainPage> {
 
         return Scaffold(
           body: PageView.builder(
+            physics: const BouncingScrollPhysics(),
             itemCount: pages.length,
             itemBuilder: (context, index) => pages[index],
             controller: _pageController,
