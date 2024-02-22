@@ -84,4 +84,37 @@ class CommunityServices {
     UserModel userData = UserModel.fromDocs(userDoc);
     return userData.getFullName();
   }
+
+  Stream<QuerySnapshot> searchPost(
+      {required UserModel user, required String keyWord}) {
+    if (user != null) {
+      String collection;
+      if (user.isGeneral()) {
+        collection = kGeneralCollection;
+      } else {
+        /**
+         * student collection  
+         * if level 1
+         * if level 2
+         * if level 3   which department
+         * if level 4   which department
+         *  */
+        collection = 'StudentPostsLevel_${user.level}_${user.department}';
+      }
+      try {
+        return _firebaseFirestore
+            .collection(collection)
+            .where('content', isGreaterThanOrEqualTo: keyWord.toLowerCase())
+            .where('content',
+                isLessThanOrEqualTo: keyWord.toLowerCase() + '\uf8ff')
+            .snapshots();
+      } catch (e) {
+        log(e.toString());
+        return const Stream.empty();
+      }
+    } else {
+      log('get no pots founded');
+      return const Stream.empty();
+    }
+  }
 }

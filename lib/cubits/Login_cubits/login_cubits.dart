@@ -1,4 +1,3 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
@@ -10,6 +9,7 @@ class LoginStateCubit extends Cubit<SignUpState> {
   LoginStateCubit() : super(LoginState());
   final AuthService _authService = AuthService();
   User? currentUser;
+
   UserModel? userModel;
 
   void checAuth() async {

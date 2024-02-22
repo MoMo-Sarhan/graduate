@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/AddPostPage.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
+import 'package:graduate/Pages/Search_post_page.dart';
 import 'package:graduate/Pages/chat_page.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
                 LoginPage.ID: (context) => LoginPage(),
                 AddPostPage.ID: (context) =>const AddPostPage(),
                 ChatPage.ID: (context) =>const ChatPage(),
+                SearchPostPage.ID:(context) => const SearchPostPage(),
               },
               debugShowCheckedModeBanner: false,
               home:const AuthGate(),
