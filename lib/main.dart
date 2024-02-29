@@ -12,8 +12,10 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Navigation_cubits/navigation_cubit.dart';
 import 'package:graduate/firebase_options.dart';
 import 'package:graduate/Pages/AuthGate.dart';
+import 'package:graduate/models/login_bloc_observer.dart';
 
 void main() async {
+  Bloc.observer = LoginBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
@@ -43,12 +45,12 @@ class MyApp extends StatelessWidget {
               routes: {
                 RegisterPage.ID: (context) => RegisterPage(),
                 LoginPage.ID: (context) => LoginPage(),
-                AddPostPage.ID: (context) =>const AddPostPage(),
-                ChatPage.ID: (context) =>const ChatPage(),
-                SearchPostPage.ID:(context) => const SearchPostPage(),
+                AddPostPage.ID: (context) => const AddPostPage(),
+                ChatPage.ID: (context) => const ChatPage(),
+                SearchPostPage.ID: (context) => const SearchPostPage(),
               },
               debugShowCheckedModeBanner: false,
-              home:const AuthGate(),
+              home: const AuthGate(),
             );
           },
         );
