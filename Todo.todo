@@ -1,19 +1,20 @@
-//TODO - make cubit to detect the if there is an user is logged in
-// and return the state depend on the user
+// TODO - make cubit to detect the if there is an user is logged in  DONE
+                             and return the state depend on the user
+// TODO - change the user name and the user in the posts         DONE
 
-//TODO - change the user name and the user in the posts
+// TODO - create course container                               DONE
+// TODO - create  a widget that shows all courses for the current user. DONE
+// TODO - gradile list to show the content of the courses if folder or file DONE
 
-//TODO -  rebuild the posts using future builder instead of stream builder
-
-
-// TODO - create course container
-// TODO - create  a widget that shows all courses for the current user.
-// TODO - gradile list to show the content of the courses if folder or file
-// TODO - gradile list to show the content of the courses if folder or file
-<<<<<<< Updated upstream
-=======
->>>>>>> new
-// TODO - create search page
+////////////////////////////////////////////////////////////////
+// TODO - build the course page with card not just container
+// TODO - progress when upload file in course
+// TODO - progress when login or sign up
+// TODO - create Doctor accounts and who can  upload files
 // TODO - create main group in chats
-// TODO - create group in chats
->>>>>>> Stashed changes
+// TODO - create groups and premssions
+// TODO - abilty to send files 
+// TODO - show the file in the post 
+// TODO - build community page with flutter not stream
+
+
