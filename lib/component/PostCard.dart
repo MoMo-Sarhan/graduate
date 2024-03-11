@@ -17,12 +17,12 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  bool? flage = false;
+  bool? flage;
 
   @override
   void initState() {
     super.initState();
-    flage = widget.post.ifIsLiked!;
+    // flage = widget.post.ifIsLiked!;
   }
 
   @override
@@ -79,10 +79,14 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 icon: Icon(
                   Icons.thumb_up,
-                  color: flage != null && flage! ? Colors.blue : Colors.black,
+                  color: widget.post.ifIsLiked != null && widget.post.ifIsLiked!
+                      ? Colors.blue
+                      : Colors.black,
                 ),
                 onPressed: () async {
-                  flage = !flage!;
+                  setState(() {
+                    widget.post.ifIsLiked = !widget.post.ifIsLiked!;
+                  });
                   await addLike(postId: widget.post.postId!);
                   // Handle like button action
                 },
@@ -105,17 +109,16 @@ class _PostCardState extends State<PostCard> {
   }
 
   Future<void> addLike({required String postId}) async {
-    int newlikes = widget.post.likes;
-    if (flage!) {
-      newlikes = newlikes + 1;
+    if (widget.post.ifIsLiked!) {
+      widget.post.likes += 1;
     } else {
-      newlikes = newlikes - 1;
+      widget.post.likes -= 1;
     }
-    widget.post.likes = newlikes;
+    setState(() {});
     var selectedPost = FirebaseFirestore.instance
         .collection(widget.post.collection!)
         .doc(postId);
-    await selectedPost.update({'likes': newlikes});
+    await selectedPost.update({'likes': widget.post.likes});
 
     // add the user in the likesid filed
     // get the fileds of the post
@@ -124,7 +127,7 @@ class _PostCardState extends State<PostCard> {
 
     if (posts.data()!.containsKey('likesList')) {
       List<dynamic> likesId = posts['likesList'];
-      if (!flage!) {
+      if (!widget.post.ifIsLiked!) {
         likesId.remove(currentUserId);
       } else {
         likesId.add(currentUserId);

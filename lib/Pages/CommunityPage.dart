@@ -51,8 +51,8 @@ class _CommunityPageState extends State<CommunityPage> {
           )
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: CommunityServices().getPosts(user: userModel),
+      body: FutureBuilder<QuerySnapshot>(
+        future: CommunityServices().getPosts(user: userModel),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -76,15 +76,18 @@ class _CommunityPageState extends State<CommunityPage> {
               ifIsLiked: ifisLiked,
             ));
           }
-          return ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                return PostCard(
-                  post: posts[index],
-                  key: ValueKey(posts[index].postId),
-                );
-              });
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return PostCard(
+                    post: posts[index],
+                    key: ValueKey(posts[index].postId),
+                  );
+                }),
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -97,5 +100,9 @@ class _CommunityPageState extends State<CommunityPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _refresh() async {
+    setState(() {});
   }
 }

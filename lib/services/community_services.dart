@@ -8,7 +8,7 @@ import 'package:graduate/models/user_model.dart';
 class CommunityServices {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Stream<QuerySnapshot> getPosts({required UserModel user}) {
+  Future<QuerySnapshot>? getPosts({required UserModel user}) {
     if (user != null) {
       String collection;
       if (user.isGeneral()) {
@@ -27,14 +27,14 @@ class CommunityServices {
         return _firebaseFirestore
             .collection(collection)
             .orderBy('time', descending: true)
-            .snapshots();
+            .get();
       } catch (e) {
         log(e.toString());
-        return const Stream.empty();
+        return null;
       }
     } else {
       log('get no pots');
-      return const Stream.empty();
+      return null;
     }
   }
 
