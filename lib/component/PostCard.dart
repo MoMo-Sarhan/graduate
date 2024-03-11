@@ -1,12 +1,16 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/CommentsPage.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/helper/get_time_formate.dart';
 import 'package:graduate/models/post_card_model.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
+import 'package:graduate/services/community_services.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({super.key, required this.post});
@@ -49,9 +53,47 @@ class _PostCardState extends State<PostCard> {
                       ? Colors.black87
                       : Colors.white),
             ), // Replace with post timestamp
-            trailing: IconButton(
-              icon: const Icon(Icons.more_horiz),
-              onPressed: () {},
+            trailing: PopupMenuButton<String>(
+              child: const Icon(Icons.more_horiz),
+              onSelected: (value) async {
+                if (value == 'Delete') {
+                  log(value);
+                  try {
+                    await CommunityServices().deletePost(
+                        user: BlocProvider.of<LoginStateCubit>(context)
+                            .userModel!,
+                        post: widget.post);
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.pop(context);
+                          });
+                          return AlertDialog(
+                            content: Text('Delete succesuly'),
+                          );
+                        });
+                    setState(() {});
+                  } catch (e) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          Future.delayed(Duration(seconds: 3), () {
+                            Navigator.pop(context);
+                          });
+                          return AlertDialog(
+                            content: Text(e.toString()),
+                          );
+                        });
+                  }
+                }
+              },
+              itemBuilder: (context) {
+                return const [
+                  PopupMenuItem(
+                      height: 3, value: 'Delete', child: Text('Delete'))
+                ];
+              },
             ),
           ),
           Padding(

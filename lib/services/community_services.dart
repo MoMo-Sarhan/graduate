@@ -117,4 +117,35 @@ class CommunityServices {
       return const Stream.empty();
     }
   }
+
+  Future<void> deletePost(
+      {required UserModel user, required PostCardModel post}) async {
+    if (user != null ) {
+      if(user.uid!=post.userUid){
+        throw Exception('You are not the owner of this post!');
+      }
+      String collection;
+      if (user.isGeneral()) {
+        collection = kGeneralCollection;
+      } else {
+        /**
+         * student collection  
+         * if level 1
+         * if level 2
+         * if level 3   which department
+         * if level 4   which department
+         *  */
+        collection = 'StudentPostsLevel_${user.level}_${user.department}';
+      }
+      try {
+        await _firebaseFirestore
+            .collection(collection)
+            .doc(post.postId)
+            .delete();
+      } catch (e) {
+        log(e.toString());
+        throw Exception(e);
+      }
+    }
+  }
 }
