@@ -147,4 +147,34 @@ class CourseService {
       }
     }
   }
+
+  Future<void> delete(
+      {required String link, required BuildContext context}) async {
+    UserModel user = BlocProvider.of<LoginStateCubit>(context).userModel!;
+    if (link.isEmpty) link = 'courses/level_${user.level}/${user.department}';
+    try {
+      await Storge.child(link).delete();
+      showDialog(
+          context: context,
+          builder: (context) {
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.pop(context);
+            });
+            return AlertDialog(
+              content: Text('Delete succesuly'),
+            );
+          });
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.pop(context);
+            });
+            return AlertDialog(
+              content: Text('Error While Deleteing:${e.toString()}'),
+            );
+          });
+    }
+  }
 }

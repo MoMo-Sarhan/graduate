@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate/helper/reusableFunc.dart';
+import 'package:graduate/services/course_services.dart';
 
 class ContainerCourse extends StatelessWidget {
   const ContainerCourse({super.key, required this.ref, required this.onTap});
@@ -13,24 +16,55 @@ class ContainerCourse extends StatelessWidget {
       onTap: onTap,
       child: isImage(text: ref.fullPath)
           ? _loadImage()
-          : Container(
-              padding: const EdgeInsets.all(8),
-              margin: const EdgeInsets.all(8),
-              width: MediaQuery.of(context).size.width / 2.5,
-              height: MediaQuery.of(context).size.height / 4,
-              decoration: BoxDecoration(
-                color: isFile(text: ref.fullPath.split('/').last)
-                    ? Color.fromARGB(255, 175, 219, 177)
-                    : const Color.fromARGB(255, 134, 132, 132),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  ref.fullPath.split('/').last,
-                  style: const TextStyle(
-                      color: Colors.white, overflow: TextOverflow.ellipsis),
+          : Stack(
+              children: [
+                Card(
+                  elevation: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.all(8),
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    height: MediaQuery.of(context).size.height / 4,
+                    decoration: BoxDecoration(
+                      color: isFile(text: ref.fullPath.split('/').last)
+                          ? Color.fromARGB(255, 175, 219, 177)
+                          : const Color.fromARGB(255, 134, 132, 132),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        ref.fullPath.split('/').last,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  right: 0,
+                  top: 3,
+                  child: PopupMenuButton<String>(onSelected: (value) {
+                    if (value == 'Delete') {
+                      CourseService()
+                          .delete(link: ref.fullPath, context: context);
+                    }
+                  }, itemBuilder: (context) {
+                    return const [
+                      PopupMenuItem(
+                        value: 'Delete',
+                        height: 20,
+                        child: Text('Delete'),
+                      ),
+                      PopupMenuItem(
+                        value: 'Rename',
+                        height: 20,
+                        child: Text('Rename'),
+                      )
+                    ];
+                  }),
+                )
+              ],
             ),
     );
   }
@@ -54,6 +88,7 @@ class ContainerCourse extends StatelessWidget {
           width: MediaQuery.of(context).size.width / 2.5,
           height: MediaQuery.of(context).size.height / 4,
           decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
                   image: NetworkImage(snapshot.data!), fit: BoxFit.fill)),
         );

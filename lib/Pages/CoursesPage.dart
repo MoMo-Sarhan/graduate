@@ -32,9 +32,6 @@ class _CoursesPageState extends State<CoursesPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () => setState(() {}),
-              icon: const Icon(Icons.refresh)),
-          IconButton(
               onPressed: () {
                 setState(() {
                   log(link);
@@ -47,11 +44,17 @@ class _CoursesPageState extends State<CoursesPage> {
               icon: const Icon(Icons.arrow_upward))
         ],
       ),
-      body: _buildCourseList(),
+      body: RefreshIndicator(
+          onRefresh: () => _refreshPage(), child: _buildCourseList()),
       floatingActionButton: CustomFloationButton(
         link: link,
       ),
     );
+  }
+
+  Future<void> _refreshPage() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {});
   }
 
   Widget _buildCourseList() {
