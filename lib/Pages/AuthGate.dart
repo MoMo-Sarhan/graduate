@@ -12,7 +12,7 @@ class AuthGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginStateCubit, SignUpState?>(
-      builder: (context, user) {
+      builder: (context, user){
         if (user is NotLoginYet) {
           BlocProvider.of<NavigationCubit>(context).navigationToLogin();
         } else {

@@ -44,9 +44,10 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 width: 7,
               ),
-              Text(BlocProvider.of<LoginStateCubit>(context)
-                  .userModel!
-                  .getFullName())
+              if (BlocProvider.of<LoginStateCubit>(context).userModel != null)
+                Text(BlocProvider.of<LoginStateCubit>(context)
+                    .userModel!
+                    .getFullName())
             ],
           )),
       body: Column(children: [
