@@ -25,6 +25,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _listMessageController = ScrollController();
   final currentUSer = FirebaseAuth.instance.currentUser!;
+  final _chatService = ChatServices();
   String pageTitle = 'Me';
   String? reciverId = FirebaseAuth.instance.currentUser?.uid;
   @override
@@ -80,7 +81,7 @@ class _ChatPageState extends State<ChatPage> {
       messageController: _messageController,
       onPressed: () async {
         if (_messageController.text.isNotEmpty) {
-          ChatServices().sendMessage(
+          _chatService.sendMessage(
               reciverId ?? currentUSer.uid, _messageController.text);
           _messageController.clear();
           _listMessageController.animateTo(
@@ -95,7 +96,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildListMessage() {
     return StreamBuilder(
-        stream: ChatServices().getMessage(
+        stream: _chatService.getMessage(
             otherUserId: reciverId ?? FirebaseAuth.instance.currentUser!.uid,
             userId: FirebaseAuth.instance.currentUser!.uid),
         builder: (context, snapshot) {
@@ -121,17 +122,64 @@ class _ChatPageState extends State<ChatPage> {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     var alignment =
         (data['senderId'] == FirebaseAuth.instance.currentUser!.uid);
-    return MessageContainer(
-      message: data['message'],
-      userName: data['senderEmail'].toString().split('@')[0],
-      time: data['timestamp'],
-      alignment: alignment,
+    return GestureDetector(
+      onLongPress: () {
+        showPopupMenu(context, document);
+      },
+      child: MessageContainer(
+        message: data['message'],
+        userName: data['senderEmail'].toString().split('@')[0],
+        time: data['timestamp'],
+        alignment: alignment,
+      ),
     );
+  }
+
+  void showPopupMenu(BuildContext context, DocumentSnapshot document) {
+    final RenderBox overlay =
+        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        Offset.zero,
+        Offset(overlay.size.width, overlay.size.height),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<String>(
+      context: context,
+      position: position,
+      items: <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: 'delete',
+          child: Text('delete'),
+        ),
+      ],
+    ).then<void>((String? selected) async {
+      if (selected == 'delete') {
+        try {
+          await _chatService.deleteMessage(
+              document: document, userId: currentUSer.uid);
+          // Handle selection
+        } catch (e) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                Future.delayed(Duration(seconds: 1), () {
+                  Navigator.pop(context);
+                });
+                return AlertDialog(
+                  content: Text(e.toString().split(':').last),
+                );
+              });
+        }
+      }
+    });
   }
 
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: ChatServices().getFriends(
+      stream: _chatService.getFriends(
           user: BlocProvider.of<LoginStateCubit>(context).userModel!),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
