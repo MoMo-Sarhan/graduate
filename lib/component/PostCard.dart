@@ -54,6 +54,7 @@ class _PostCardState extends State<PostCard> {
                       : Colors.white),
             ), // Replace with post timestamp
             trailing: PopupMenuButton<String>(
+              position: PopupMenuPosition.under,
               child: const Icon(Icons.more_horiz),
               onSelected: (value) async {
                 if (value == 'Delete') {

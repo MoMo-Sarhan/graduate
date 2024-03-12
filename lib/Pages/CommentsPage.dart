@@ -1,10 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/component/comment_card.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/comment_model.dart';
 import 'package:graduate/models/post_card_model.dart';
+import 'package:graduate/models/user_model.dart';
 
 class CommentsPage extends StatefulWidget {
   const CommentsPage({required this.post});
@@ -84,16 +88,19 @@ class _CommentsPageState extends State<CommentsPage> {
           List<CommentModel> comments = [];
           for (var doc in snapshot.data!.docs) {
             comments.add(CommentModel.fromDoc(doc));
+            comments.last.id = doc.id;
           }
           return ListView.builder(
               itemCount: comments.length,
               itemBuilder: (context, index) {
-                return CommentCard(comment: comments[index]);
+                return CommentCard(comment: comments[index],post: widget.post,);
               });
         });
   }
 
   Future<void> addComment() async {
+    UserModel currentUser =
+        BlocProvider.of<LoginStateCubit>(context).userModel!;
     setState(() {});
     if (_controller.text.isNotEmpty) {
       var selectedPost = FirebaseFirestore.instance
@@ -107,8 +114,8 @@ class _CommentsPageState extends State<CommentsPage> {
       });
       if (!postData.data()!.containsKey('comments')) {}
       selectedPost.collection('comments').add({
-        'uid': widget.post.userUid,
-        'userName': widget.post.userName,
+        'uid': currentUser.uid,
+        'userName': currentUser.getFullName(),
         'content': _controller.text,
         'timestamp': Timestamp.now()
       });
