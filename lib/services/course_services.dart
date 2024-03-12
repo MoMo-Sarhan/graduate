@@ -8,11 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/user_model.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CourseService {
-  final Reference Storge = FirebaseStorage.instance.ref();
+  final Reference storgeRef = FirebaseStorage.instance.ref();
 
   Future<List<Reference>?> getLevelDirs(
       {required BuildContext context, required String link}) async {
@@ -28,7 +27,7 @@ class CourseService {
     }
 
     try {
-      ListResult content = await Storge.child(passlink).listAll();
+      ListResult content = await storgeRef.child(passlink).listAll();
       return content.prefixes + content.items;
     } catch (e) {
       log(e.toString());
@@ -70,16 +69,16 @@ class CourseService {
     UserModel user = BlocProvider.of<LoginStateCubit>(context).userModel!;
     if (link.isEmpty) link = 'courses/level_${user.level}/${user.department}';
 
-    TextEditingController _courseNameController = TextEditingController();
+    TextEditingController courseNameController = TextEditingController();
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             content: TextField(
-              controller: _courseNameController,
+              controller: courseNameController,
               onSubmitted: (value) async {
                 try {
-                  await Storge.child('$link/${_courseNameController.text}')
+                  await storgeRef.child('$link/${courseNameController.text}')
                       .putString('');
                   log('Created suddfafy');
                 } catch (e) {
@@ -119,7 +118,7 @@ class CourseService {
         try {
           link = '$link/${file.split('/').last}';
           log(link);
-          await Storge.child(link).putFile(File(file));
+          await storgeRef.child(link).putFile(File(file));
           showDialog(
               context: context,
               builder: (context) {
@@ -153,7 +152,7 @@ class CourseService {
     UserModel user = BlocProvider.of<LoginStateCubit>(context).userModel!;
     if (link.isEmpty) link = 'courses/level_${user.level}/${user.department}';
     try {
-      await Storge.child(link).delete();
+      await storgeRef.child(link).delete();
       showDialog(
           context: context,
           builder: (context) {

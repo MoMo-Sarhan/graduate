@@ -1,18 +1,13 @@
 import 'dart:developer';
-import 'dart:ui';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/component/CustomButton.dart';
 import 'package:graduate/component/custom_text_filed.dart';
 import 'package:graduate/component/dropDownGender.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/helper/constatn.dart';
 import 'package:graduate/models/user_model.dart';
-import 'package:graduate/services/auth/auth_services.dart';
-import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
@@ -239,9 +234,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       log(_phoneNumberController.text);
                     },
                     validator: (value) {
-                      int phone;
                       try {
-                        phone = int.parse(value);
+                        int.parse(value);
                       } catch (e) {
                         return "Please enter a valid Phone number";
                       }

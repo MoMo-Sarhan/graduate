@@ -137,7 +137,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void showPopupMenu(BuildContext context, DocumentSnapshot document) {
     final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+        Overlay.of(context).context.findRenderObject() as RenderBox;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         Offset.zero,

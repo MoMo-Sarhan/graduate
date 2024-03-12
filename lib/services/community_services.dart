@@ -8,7 +8,7 @@ import 'package:graduate/models/user_model.dart';
 class CommunityServices {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Future<QuerySnapshot>? getPosts({required UserModel user}) {
+  Future<QuerySnapshot>? getPosts({UserModel? user}) {
     if (user != null) {
       String collection;
       if (user.isGeneral()) {
@@ -86,7 +86,7 @@ class CommunityServices {
   }
 
   Stream<QuerySnapshot> searchPost(
-      {required UserModel user, required String keyWord}) {
+      {UserModel? user, required String keyWord}) {
     if (user != null) {
       String collection;
       if (user.isGeneral()) {
@@ -106,7 +106,7 @@ class CommunityServices {
             .collection(collection)
             .where('content', isGreaterThanOrEqualTo: keyWord.toLowerCase())
             .where('content',
-                isLessThanOrEqualTo: keyWord.toLowerCase() + '\uf8ff')
+                isLessThanOrEqualTo: '${keyWord.toLowerCase()}\uf8ff')
             .snapshots();
       } catch (e) {
         log(e.toString());
@@ -119,7 +119,7 @@ class CommunityServices {
   }
 
   Future<void> deletePost(
-      {required UserModel user, required PostCardModel post}) async {
+      {UserModel? user, required PostCardModel post}) async {
     if (user != null ) {
       if(user.uid!=post.userUid){
         throw Exception('You are not the owner of this post!');

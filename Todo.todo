@@ -8,6 +8,8 @@
 // TODO - abilty to delete files                                                    DONE
 // TODO - build the course page with card not just container                        DONE
 // TODO - build community page with flutter not stream                              DONE
+// TODO - abilty to delete message                                                  DONE
+// TODO - abilty to delete  comment                                                 DONE
 
 ////////////////////////////////////////////////////////////////
 // TODO - progress when upload file in course   and create bloc
