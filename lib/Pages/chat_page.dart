@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/Pages/addGroupPage.dart';
 import 'package:graduate/component/CustomInputFiled.dart';
 import 'package:graduate/component/MessageContainer.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
-import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
@@ -40,6 +40,21 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
         centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+              position: PopupMenuPosition.under,
+              onSelected: (value) {
+                if (value == 'New Group') {
+                  Navigator.pushNamed(context, AddGroupPage.ID);
+                }
+              },
+              itemBuilder: (context) {
+                return const [
+                  PopupMenuItem(
+                      height: 1, value: 'New Group', child: Text('New Group'))
+                ];
+              })
+        ],
       ),
       body: Column(children: [
         Expanded(
@@ -197,12 +212,20 @@ class _ChatPageState extends State<ChatPage> {
             uid: reciverId ?? FirebaseAuth.instance.currentUser!.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const SizedBox(
+              width: double.infinity,
+              height: 200,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Oops something went wrong!"),
+            return const SizedBox(
+              width: double.infinity,
+              height: 200,
+              child: Center(
+                child: Text("Oops something went wrong!"),
+              ),
             );
           }
           return Container(

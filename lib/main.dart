@@ -5,6 +5,7 @@ import 'package:graduate/Pages/AddPostPage.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
 import 'package:graduate/Pages/Search_post_page.dart';
+import 'package:graduate/Pages/addGroupPage.dart';
 import 'package:graduate/Pages/chat_page.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
                 AddPostPage.ID: (context) => const AddPostPage(),
                 ChatPage.ID: (context) => const ChatPage(),
                 SearchPostPage.ID: (context) => const SearchPostPage(),
+                AddGroupPage.ID:(context) => const AddGroupPage(),
               },
               debugShowCheckedModeBanner: false,
               home: const AuthGate(),
