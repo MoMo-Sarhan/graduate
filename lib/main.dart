@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/AddPostPage.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
+import 'package:graduate/Pages/Search_post_page.dart';
+import 'package:graduate/Pages/addGroupPage.dart';
 import 'package:graduate/Pages/chat_page.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
@@ -11,8 +13,10 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Navigation_cubits/navigation_cubit.dart';
 import 'package:graduate/firebase_options.dart';
 import 'package:graduate/Pages/AuthGate.dart';
+import 'package:graduate/models/login_bloc_observer.dart';
 
 void main() async {
+  Bloc.observer = LoginBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
@@ -42,11 +46,13 @@ class MyApp extends StatelessWidget {
               routes: {
                 RegisterPage.ID: (context) => RegisterPage(),
                 LoginPage.ID: (context) => LoginPage(),
-                AddPostPage.ID: (context) =>const AddPostPage(),
-                ChatPage.ID: (context) =>const ChatPage(),
+                AddPostPage.ID: (context) => const AddPostPage(),
+                ChatPage.ID: (context) => const ChatPage(),
+                SearchPostPage.ID: (context) => const SearchPostPage(),
+                AddGroupPage.id: (context) => const AddGroupPage(),
               },
               debugShowCheckedModeBanner: false,
-              home:const AuthGate(),
+              home: const AuthGate(),
             );
           },
         );

@@ -24,7 +24,7 @@ class AddPostPage extends StatefulWidget {
 class _AddPostPageState extends State<AddPostPage> {
   final TextEditingController _contentConroller = TextEditingController();
   String? imagePath;
-  String content = ' hello world';
+  String content = 'hello world';
 
   @override
   Widget build(BuildContext context) {

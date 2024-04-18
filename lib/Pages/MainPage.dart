@@ -75,7 +75,7 @@ class _MainPageState extends State<MainPage> {
                 onpressed: () {},
                 index: 4)
           ]);
-          pages.addAll(const [
+          pages.addAll([
             HomePage(),
             CommunityPage(),
             BotPage(),

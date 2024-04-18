@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/Pages/addGroupPage.dart';
 import 'package:graduate/component/CustomInputFiled.dart';
 import 'package:graduate/component/MessageContainer.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
-import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
@@ -25,6 +25,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _listMessageController = ScrollController();
   final currentUSer = FirebaseAuth.instance.currentUser!;
+  final _chatService = ChatServices();
   String pageTitle = 'Me';
   String? reciverId = FirebaseAuth.instance.currentUser?.uid;
   @override
@@ -40,6 +41,21 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
         centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+              position: PopupMenuPosition.under,
+              onSelected: (value) {
+                if (value == 'New Group') {
+                  Navigator.pushNamed(context, AddGroupPage.id);
+                }
+              },
+              itemBuilder: (context) {
+                return const [
+                  PopupMenuItem(
+                      height: 1, value: 'New Group', child: Text('New Group'))
+                ];
+              })
+        ],
       ),
       body: Column(children: [
         Expanded(
@@ -65,7 +81,7 @@ class _ChatPageState extends State<ChatPage> {
       messageController: _messageController,
       onPressed: () async {
         if (_messageController.text.isNotEmpty) {
-          ChatServices().sendMessage(
+          _chatService.sendMessage(
               reciverId ?? currentUSer.uid, _messageController.text);
           _messageController.clear();
           _listMessageController.animateTo(
@@ -80,7 +96,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildListMessage() {
     return StreamBuilder(
-        stream: ChatServices().getMessage(
+        stream: _chatService.getMessage(
             otherUserId: reciverId ?? FirebaseAuth.instance.currentUser!.uid,
             userId: FirebaseAuth.instance.currentUser!.uid),
         builder: (context, snapshot) {
@@ -106,17 +122,64 @@ class _ChatPageState extends State<ChatPage> {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     var alignment =
         (data['senderId'] == FirebaseAuth.instance.currentUser!.uid);
-    return MessageContainer(
-      message: data['message'],
-      userName: data['senderEmail'].toString().split('@')[0],
-      time: data['timestamp'],
-      alignment: alignment,
+    return GestureDetector(
+      onLongPress: () {
+        showPopupMenu(context, document);
+      },
+      child: MessageContainer(
+        message: data['message'],
+        userName: data['senderEmail'].toString().split('@')[0],
+        time: data['timestamp'],
+        alignment: alignment,
+      ),
     );
+  }
+
+  void showPopupMenu(BuildContext context, DocumentSnapshot document) {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        Offset.zero,
+        Offset(overlay.size.width, overlay.size.height),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<String>(
+      context: context,
+      position: position,
+      items: <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: 'delete',
+          child: Text('delete'),
+        ),
+      ],
+    ).then<void>((String? selected) async {
+      if (selected == 'delete') {
+        try {
+          await _chatService.deleteMessage(
+              document: document, userId: currentUSer.uid);
+          // Handle selection
+        } catch (e) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                Future.delayed(Duration(seconds: 1), () {
+                  Navigator.pop(context);
+                });
+                return AlertDialog(
+                  content: Text(e.toString().split(':').last),
+                );
+              });
+        }
+      }
+    });
   }
 
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: ChatServices().getFriends(
+      stream: _chatService.getFriends(
           user: BlocProvider.of<LoginStateCubit>(context).userModel!),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -197,12 +260,20 @@ class _ChatPageState extends State<ChatPage> {
             uid: reciverId ?? FirebaseAuth.instance.currentUser!.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const SizedBox(
+              width: double.infinity,
+              height: 200,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Oops something went wrong!"),
+            return const SizedBox(
+              width: double.infinity,
+              height: 200,
+              child: Center(
+                child: Text("Oops something went wrong!"),
+              ),
             );
           }
           return Container(

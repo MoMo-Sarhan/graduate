@@ -1,18 +1,10 @@
 import 'dart:developer';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/component/ContainerCourse.dart';
 import 'package:graduate/component/customFloationbutton.dart';
-import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/helper/reusableFunc.dart';
 import 'package:graduate/services/course_services.dart';
-import 'package:graduate/utils/animations.dart';
-
-//TODO -  add a floationg button but the action of the button shoud be diffrent
-//TODO - add button to add file or folder
-//TODO - add button to upload file or image
 
 class CoursesPage extends StatefulWidget {
   const CoursesPage({super.key});
@@ -28,12 +20,10 @@ class _CoursesPageState extends State<CoursesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: link.isEmpty ? Text('Courses') : Text(link.split('/').last),
+        title:
+            link.isEmpty ? const Text('Courses') : Text(link.split('/').last),
         centerTitle: true,
         actions: [
-          IconButton(
-              onPressed: () => setState(() {}),
-              icon: const Icon(Icons.refresh)),
           IconButton(
               onPressed: () {
                 setState(() {
@@ -47,11 +37,17 @@ class _CoursesPageState extends State<CoursesPage> {
               icon: const Icon(Icons.arrow_upward))
         ],
       ),
-      body: _buildCourseList(),
+      body: RefreshIndicator(
+          onRefresh: () => _refreshPage(), child: _buildCourseList()),
       floatingActionButton: CustomFloationButton(
         link: link,
       ),
     );
+  }
+
+  Future<void> _refreshPage() async {
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {});
   }
 
   Widget _buildCourseList() {
@@ -65,7 +61,9 @@ class _CoursesPageState extends State<CoursesPage> {
         }
 
         List<String> text = [];
-        snapshot.data!.forEach((element) => text.add(element.fullPath));
+        for (var element in snapshot.data!) {
+          text.add(element.fullPath);
+        }
         return CustomScrollView(
           slivers: [
             SliverGrid.builder(

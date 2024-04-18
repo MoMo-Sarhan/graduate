@@ -34,6 +34,7 @@ class CustomTextFormFiled extends StatelessWidget {
         onChanged: (data) {
           log(controller.text);
         },
+
         validator: validator,
         controller: controller,
         obscureText: obscureText,

@@ -47,6 +47,17 @@ class ChatServices extends ChangeNotifier {
         .snapshots();
   }
 
+  Future<void> deleteMessage(
+      {required DocumentSnapshot document, required String userId}) async {
+    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    MessageModel message = MessageModel.fromDoc(data);
+    if (message.senderId == userId) {
+      await document.reference.delete();
+    } else {
+      throw Exception('not permitted for you');
+    }
+  }
+
   Stream<QuerySnapshot> getFriends({required UserModel user}) {
     String collection = 'users';
     log(user.email);

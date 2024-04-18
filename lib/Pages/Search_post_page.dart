@@ -1,9 +1,9 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduate/Pages/AddPostPage.dart';
-import 'package:graduate/Pages/Search_post_page.dart';
 import 'package:graduate/Pages/chat_page.dart';
 import 'package:graduate/component/PostCard.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
@@ -11,56 +11,47 @@ import 'package:graduate/models/post_card_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/community_services.dart';
 
-class CommunityPage extends StatefulWidget {
-  const CommunityPage({super.key});
+class SearchPostPage extends StatefulWidget {
+  const SearchPostPage({super.key});
+  static const String ID = 'SearchPostPage';
 
   @override
-  State<CommunityPage> createState() => _CommunityPageState();
+  State<SearchPostPage> createState() => _SearchPostPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> {
+class _SearchPostPageState extends State<SearchPostPage> {
   List<int> dataList = [];
+  String keyWord = '';
 
   @override
   Widget build(BuildContext context) {
     UserModel userModel = BlocProvider.of<LoginStateCubit>(context).userModel!;
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(userModel.isGeneral()
-            ? 'General'
-            : userModel.isStudent() && userModel.level! < 2
-                ? '${userModel.level}'
-                : '${userModel.level} ${userModel.department}'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, SearchPostPage.ID);
+          centerTitle: true,
+          title: TextField(
+            onChanged: (value) {
+              setState(() {
+                keyWord = value;
+              });
             },
-            icon: const Icon(
-              Icons.search,
-            ),
-            iconSize: 24,
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, AddPostPage.ID);
-            },
-            icon: const Icon(Icons.add),
-            iconSize: 35,
-          )
-        ],
-      ),
-      body: FutureBuilder<QuerySnapshot>(
-        future: CommunityServices().getPosts(user: userModel),
+          )),
+      body: StreamBuilder<QuerySnapshot>(
+        stream:
+            CommunityServices().searchPost(user: userModel, keyWord: keyWord),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
+            log(snapshot.error.toString());
             return const Center(
               child: Text('Error'),
+            );
+          } else if (snapshot.data == null) {
+            return const Center(
+              child: Text('no posts founded'),
             );
           }
           List<PostCardModel> posts = [];
@@ -76,18 +67,15 @@ class _CommunityPageState extends State<CommunityPage> {
               ifIsLiked: ifisLiked,
             ));
           }
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  return PostCard(
-                    post: posts[index],
-                    key: ValueKey(posts[index].postId),
-                  );
-                }),
-          );
+          return ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                return PostCard(
+                  post: posts[index],
+                  key: ValueKey(posts[index].postId),
+                );
+              });
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -100,9 +88,5 @@ class _CommunityPageState extends State<CommunityPage> {
         ),
       ),
     );
-  }
-
-  Future<void> _refresh() async {
-    setState(() {});
   }
 }

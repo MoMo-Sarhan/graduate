@@ -1,12 +1,16 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/CommentsPage.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/helper/get_time_formate.dart';
 import 'package:graduate/models/post_card_model.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
+import 'package:graduate/services/community_services.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({super.key, required this.post});
@@ -17,12 +21,12 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  bool? flage = false;
+  bool? flage;
 
   @override
   void initState() {
     super.initState();
-    flage = widget.post.ifIsLiked!;
+    // flage = widget.post.ifIsLiked!;
   }
 
   @override
@@ -49,9 +53,48 @@ class _PostCardState extends State<PostCard> {
                       ? Colors.black87
                       : Colors.white),
             ), // Replace with post timestamp
-            trailing: IconButton(
-              icon: const Icon(Icons.more_horiz),
-              onPressed: () {},
+            trailing: PopupMenuButton<String>(
+              position: PopupMenuPosition.under,
+              child: const Icon(Icons.more_horiz),
+              onSelected: (value) async {
+                if (value == 'Delete') {
+                  log(value);
+                  try {
+                    await CommunityServices().deletePost(
+                        user: BlocProvider.of<LoginStateCubit>(context)
+                            .userModel!,
+                        post: widget.post);
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.pop(context);
+                          });
+                          return AlertDialog(
+                            content: Text('Delete succesuly'),
+                          );
+                        });
+                    setState(() {});
+                  } catch (e) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          Future.delayed(Duration(seconds: 3), () {
+                            Navigator.pop(context);
+                          });
+                          return AlertDialog(
+                            content: Text(e.toString()),
+                          );
+                        });
+                  }
+                }
+              },
+              itemBuilder: (context) {
+                return const [
+                  PopupMenuItem(
+                      height: 3, value: 'Delete', child: Text('Delete'))
+                ];
+              },
             ),
           ),
           Padding(
@@ -79,10 +122,14 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 icon: Icon(
                   Icons.thumb_up,
-                  color: flage != null && flage! ? Colors.blue : Colors.black,
+                  color: widget.post.ifIsLiked != null && widget.post.ifIsLiked!
+                      ? Colors.blue
+                      : Colors.black,
                 ),
                 onPressed: () async {
-                  flage = !flage!;
+                  setState(() {
+                    widget.post.ifIsLiked = !widget.post.ifIsLiked!;
+                  });
                   await addLike(postId: widget.post.postId!);
                   // Handle like button action
                 },
@@ -105,17 +152,16 @@ class _PostCardState extends State<PostCard> {
   }
 
   Future<void> addLike({required String postId}) async {
-    int newlikes = widget.post.likes;
-    if (flage!) {
-      newlikes = newlikes + 1;
+    if (widget.post.ifIsLiked!) {
+      widget.post.likes += 1;
     } else {
-      newlikes = newlikes - 1;
+      widget.post.likes -= 1;
     }
-    widget.post.likes = newlikes;
+    setState(() {});
     var selectedPost = FirebaseFirestore.instance
         .collection(widget.post.collection!)
         .doc(postId);
-    await selectedPost.update({'likes': newlikes});
+    await selectedPost.update({'likes': widget.post.likes});
 
     // add the user in the likesid filed
     // get the fileds of the post
@@ -124,7 +170,7 @@ class _PostCardState extends State<PostCard> {
 
     if (posts.data()!.containsKey('likesList')) {
       List<dynamic> likesId = posts['likesList'];
-      if (!flage!) {
+      if (!widget.post.ifIsLiked!) {
         likesId.remove(currentUserId);
       } else {
         likesId.add(currentUserId);
