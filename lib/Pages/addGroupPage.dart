@@ -9,7 +9,7 @@ import 'package:graduate/services/chooseIcons_services.dart';
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({super.key});
-  static const String ID = 'Add Group Page';
+  static const String id = 'Add Group Page';
 
   @override
   State<AddGroupPage> createState() => _AddGroupPageState();

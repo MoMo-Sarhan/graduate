@@ -46,7 +46,7 @@ class _ChatPageState extends State<ChatPage> {
               position: PopupMenuPosition.under,
               onSelected: (value) {
                 if (value == 'New Group') {
-                  Navigator.pushNamed(context, AddGroupPage.ID);
+                  Navigator.pushNamed(context, AddGroupPage.id);
                 }
               },
               itemBuilder: (context) {

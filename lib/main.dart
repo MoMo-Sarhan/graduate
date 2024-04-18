@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
                 AddPostPage.ID: (context) => const AddPostPage(),
                 ChatPage.ID: (context) => const ChatPage(),
                 SearchPostPage.ID: (context) => const SearchPostPage(),
-                AddGroupPage.ID:(context) => const AddGroupPage(),
+                AddGroupPage.id: (context) => const AddGroupPage(),
               },
               debugShowCheckedModeBanner: false,
               home: const AuthGate(),
