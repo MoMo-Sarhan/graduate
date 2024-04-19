@@ -6,7 +6,6 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
-
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({super.key});
   static const String id = 'Add Group Page';
@@ -58,7 +57,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
   }
 
   Widget _buildUserItem(UserModel friend) {
-    final isSelected = selectedUsers.contains(friend);
     return ListTile(
       leading: CircleAvatar(
           child: FutureBuilder(

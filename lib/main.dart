@@ -14,11 +14,13 @@ import 'package:graduate/cubits/Navigation_cubits/navigation_cubit.dart';
 import 'package:graduate/firebase_options.dart';
 import 'package:graduate/Pages/AuthGate.dart';
 import 'package:graduate/models/login_bloc_observer.dart';
+import 'package:graduate/services/firebaseMesseging_apI.dart';
 
 void main() async {
   Bloc.observer = LoginBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessegingApi().initNotification();
   runApp(const MyApp());
 }
 
