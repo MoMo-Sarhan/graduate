@@ -24,10 +24,18 @@ class _MainPageState extends State<MainPage> {
   final PageController _pageController = PageController();
   int _selectedPage = 0;
   @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(() {
+      FocusScope.of(context).unfocus();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<MyBottomBarModel> buttonsBar = [];
     List<Widget> pages = [];
-    
+
     return BlocBuilder<LoginStateCubit, SignUpState>(
       builder: (context, state) {
         if (state is SignUpAsGeneral) {
@@ -75,7 +83,7 @@ class _MainPageState extends State<MainPage> {
                 onpressed: () {},
                 index: 4)
           ]);
-          pages.addAll([
+          pages.addAll(const [
             HomePage(),
             CommunityPage(),
             BotPage(),
@@ -104,7 +112,7 @@ class _MainPageState extends State<MainPage> {
                 });
                 _pageController.jumpToPage(_selectedPage);
               },
-              textStyle: TextStyle(fontSize: 3),
+              textStyle: const TextStyle(fontSize: 3),
               activeColor: Colors.blue,
               selectedIndex: _selectedPage,
               tabs: buttonsBar
