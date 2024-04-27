@@ -20,7 +20,7 @@ class _BotPageState extends State<BotPage> {
   final TextEditingController messageController = TextEditingController();
   final _cohereClient =
       CohereClient('TcZjPcNuntkBpDbSsH5M5X8N9vlSs6Mq11KoL3rd');
-  List<String> _chatHistory = [];
+  final List<String> _chatHistory = [];
   final _messageControl = TextEditingController();
   final _listController = ScrollController();
   String _response = '';

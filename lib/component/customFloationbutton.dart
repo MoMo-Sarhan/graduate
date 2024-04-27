@@ -46,7 +46,7 @@ class _CustomFloationButtonState extends State<CustomFloationButton> {
                                   );
                                 },
                                 icon: Icon(
-                                  Icons.folder,
+                                  Icons.create_new_folder_rounded,
                                   size: iconSize,
                                 )),
                           ]),
