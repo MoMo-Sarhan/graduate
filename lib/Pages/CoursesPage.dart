@@ -68,7 +68,7 @@ class _CoursesPageState extends State<CoursesPage> {
           slivers: [
             SliverGrid.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 150,
+                maxCrossAxisExtent: 200,
                 mainAxisExtent: 150,
                 crossAxisSpacing: 1,
               ),

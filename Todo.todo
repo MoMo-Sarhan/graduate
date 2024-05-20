@@ -13,6 +13,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 //TODO -  rebuild the posts using future builder instead of stream builder
@@ -31,6 +32,9 @@
 // TODO - gradile list to show the content of the courses if folder or file
 >>>>>>> new
 =======
+=======
+
+>>>>>>> new
 ////////////////////////////////////////////////////////////////
 // TODO - progress when upload file in course   and create bloc
 // TODO - progress when login or sign up    and create bloc
@@ -41,4 +45,11 @@
 // TODO - show the file in the post 
 // TODO - add notification
 // TODO - create user mode for home page only  <------------------------------->
+<<<<<<< HEAD
+>>>>>>> new
+=======
+
+// nothing 
+
+// TODO - save the history of bot message on the phone locally       
 >>>>>>> new

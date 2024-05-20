@@ -20,25 +20,38 @@ class ContainerCourse extends StatelessWidget {
               children: [
                 Card(
                   elevation: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.all(8),
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    height: MediaQuery.of(context).size.height / 4,
-                    decoration: BoxDecoration(
-                      color: isFile(text: ref.fullPath.split('/').last)
-                          ? Color.fromARGB(255, 175, 219, 177)
-                          : const Color.fromARGB(255, 134, 132, 132),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Container(
+                            // padding: const EdgeInsets.all(8),
+                            // margin: const EdgeInsets.all(8),
+                            // width: MediaQuery.of(context).size.width / 2.5,
+                            // height: MediaQuery.of(context).size.height / 4,
+                            decoration: BoxDecoration(
+                              // color: isFile(text: ref.fullPath.split('/').last)
+                              //     ? Color.fromARGB(255, 175, 219, 177)
+                              //     : const Color.fromARGB(255, 134, 132, 132),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: isFile(text: ref.fullPath.split('/').last)
+                                ? Icon(
+                                    Icons.edit_document,
+                                    size: MediaQuery.of(context).size.width / 4,
+                                  )
+                                : Icon(
+                                    Icons.folder_rounded,
+                                    size: MediaQuery.of(context).size.width / 4,
+                                    color: Color.fromARGB(255, 83, 46, 36),
+                                  )),
+                      ),
+                      Text(
                         ref.fullPath.split('/').last,
                         style: const TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             overflow: TextOverflow.ellipsis),
                       ),
-                    ),
+                    ],
                   ),
                 ),
                 Positioned(
@@ -83,8 +96,8 @@ class ContainerCourse extends StatelessWidget {
           );
         }
         return Container(
-          padding: const EdgeInsets.all(8),
-          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.all(16),
           width: MediaQuery.of(context).size.width / 2.5,
           height: MediaQuery.of(context).size.height / 4,
           decoration: BoxDecoration(
