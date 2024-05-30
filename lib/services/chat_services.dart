@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/message_model.dart';
 import 'package:graduate/models/user_model.dart';
 
@@ -68,5 +69,16 @@ class ChatServices extends ChangeNotifier {
         .where('department', isEqualTo: user.department)
         // .where('email', isNotEqualTo: user.email)
         .snapshots();
+  }
+
+  Future<void> create_group({required Group group}) async {
+    try {
+      await _firebaseFirestore
+          .collection('/groups')
+          .doc(group.group_name)
+          .set(group.toMap());
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

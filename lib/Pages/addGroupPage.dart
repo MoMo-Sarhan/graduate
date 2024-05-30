@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
+import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
@@ -19,6 +22,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
   final TextEditingController _groupNameController = TextEditingController();
   final _chooseIconService = ChooseIconService();
   List<UserModel> selectedUsers = [];
+  final ChatServices _chatServices = ChatServices();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +55,19 @@ class _AddGroupPageState extends State<AddGroupPage> {
         Expanded(child: _buildUserList())
       ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          if (_groupNameController.text != null &&
+              _groupNameController.text.isNotEmpty) {
+            final Group _group = Group(
+                group_name: _groupNameController.text,
+                admins: [],
+                member_ids: [],
+                permissions: true);
+            log('start creating group');
+            await _chatServices.create_group(group: _group);
+            log('finised creating group');
+          }
+        },
         child: const Icon(Icons.arrow_forward),
       ),
     );
