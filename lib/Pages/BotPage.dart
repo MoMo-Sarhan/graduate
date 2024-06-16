@@ -18,15 +18,40 @@ class BotPage extends StatefulWidget {
 
 class _BotPageState extends State<BotPage> {
   final TextEditingController messageController = TextEditingController();
-  final _cohereClient =
-      CohereClient('TcZjPcNuntkBpDbSsH5M5X8N9vlSs6Mq11KoL3rd');
+  final _cohereClient = CohereClient();
   final List<String> _chatHistory = [];
   final _messageControl = TextEditingController();
   final _listController = ScrollController();
   String _response = '';
+  String _chat = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: FutureBuilder(
+          future: _cohereClient.getChats(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.data == null) {
+              return Center(
+                child: Text('error'),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('${snapshot.data![index]}'),
+                );
+              },
+            );
+          },
+        ),
+      ),
       appBar: AppBar(
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
@@ -35,7 +60,6 @@ class _BotPageState extends State<BotPage> {
         title: const Text('Chatbot'),
         centerTitle: true,
       ),
-      drawer: const Drawer(),
       body: Stack(
         children: [
           Center(
@@ -89,6 +113,15 @@ class _BotPageState extends State<BotPage> {
                     duration: const Duration(microseconds: 500),
                     curve: Curves.bounceInOut,
                   );
+                  _chat = _chatHistory.length == 2
+                      ? message.substring(0, 5)
+                      : _chat;
+                  await _cohereClient.saveMessage(_chat,
+                      message: message,
+                      response: jsonDecode(response)['text'],
+                      newChat: _chatHistory.length == 2);
+                  var x = await _cohereClient.getChats();
+                  log(x.toString());
                 } catch (e) {
                   log('Error: $e');
                   log('$_chatHistory');
