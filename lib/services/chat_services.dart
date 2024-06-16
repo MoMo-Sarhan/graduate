@@ -71,7 +71,34 @@ class ChatServices extends ChangeNotifier {
         .snapshots();
   }
 
-  Future<void> create_group({required Group group}) async {
+  Stream<QuerySnapshot> getGroups({required UserModel user}) {
+    String collection = 'groups';
+    return FirebaseFirestore.instance
+        .collection(collection)
+        .where('level', isEqualTo: user.level)
+        .where('departement', isEqualTo: user.department)
+        .snapshots();
+  }
+
+  Future<void> sendMessageToGroup(
+      {required String groupName, required String message}) async {
+    String collection = 'groups';
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection(collection).doc(groupName);
+
+    final String currentUserId = _firebaseAuth.currentUser!.uid;
+    final Timestamp timestamp = Timestamp.now();
+
+    MessageModel newMessage = MessageModel(
+        message: message,
+        reciverId: groupName,
+        senderId: currentUserId,
+        timestamp: timestamp);
+
+    await docRef.collection('messages').add(newMessage.toMap());
+  }
+
+  Future<void> create_group({required GroupModel group}) async {
     try {
       await _firebaseFirestore
           .collection('/groups')
@@ -80,5 +107,15 @@ class ChatServices extends ChangeNotifier {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Stream<QuerySnapshot> getMessageFromGroup({required String groupName}) {
+    String collection = 'groups';
+    return _firebaseFirestore
+        .collection(collection)
+        .doc(groupName)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .snapshots();
   }
 }

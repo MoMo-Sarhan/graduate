@@ -1,20 +1,34 @@
-class Group {
+class GroupModel {
   final String group_name;
-  final List<String> member_ids;
-  final List<String> admins;
+  final List<dynamic> member_ids;
+  final List<dynamic> admins;
+  final int level;
+  final String departement;
   final bool permissions;
-  Group(
-      {required this.group_name,
-      required this.member_ids,
-      required this.admins,
-      required this.permissions});
+  GroupModel({
+    required this.group_name,
+    required this.member_ids,
+    required this.admins,
+    required this.permissions,
+    required this.level,
+    required this.departement,
+  }
+  
+  
+  );
+ String getFullName(){
+  return this.group_name;
+ } 
 
-  factory Group.fromJosn(data) {
-    return Group(
-        group_name: data['group_name'],
-        member_ids: data['member_ids'],
-        admins: data['admins'],
-        permissions: data['permissions']);
+  factory GroupModel.fromDocs(data) {
+    return GroupModel(
+      group_name: data['group_name'],
+      member_ids: data['member_ids'],
+      admins: data['admins'],
+      permissions: data['permissions'],
+      level: data['level'],
+      departement: data['departement'],
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -23,6 +37,8 @@ class Group {
       'member_ids': member_ids,
       'admins': admins,
       'permissions': permissions,
+      'level': level,
+      'departement': departement,
     };
   }
 }

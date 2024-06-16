@@ -60,7 +60,9 @@ class _AddGroupPageState extends State<AddGroupPage> {
         onPressed: () async {
           if (_groupNameController.text != null &&
               _groupNameController.text.isNotEmpty) {
-            final Group _group = Group(
+            final GroupModel _group = GroupModel(
+                level: me.level!,
+                departement: me.department!,
                 group_name: _groupNameController.text,
                 admins: [me.uid!],
                 member_ids: MembersIds.toList(),

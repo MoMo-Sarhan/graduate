@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/addGroupPage.dart';
 import 'package:graduate/component/CustomInputFiled.dart';
 import 'package:graduate/component/MessageContainer.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
+import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
@@ -27,7 +29,15 @@ class _ChatPageState extends State<ChatPage> {
   final currentUSer = FirebaseAuth.instance.currentUser!;
   final _chatService = ChatServices();
   String pageTitle = 'Me';
+  bool isGroup = false;
   String? reciverId = FirebaseAuth.instance.currentUser?.uid;
+  final List<Item> _data = List<Item>.generate(
+    3,
+    (int index) => Item(
+      headerValue: 'Panel $index',
+      expandedValue: 'This is item number $index',
+    ),
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +76,34 @@ class _ChatPageState extends State<ChatPage> {
       drawer: Drawer(
         child: Column(
           children: [
-            _drawerImage(),
-            _buildUserInfo(),
+            if (!isGroup) _drawerImage(),
+
+            if (!isGroup) _buildUserInfo(),
+            // ExpansionPanelList(
+            //   expansionCallback: (index, isExpanded) {
+            //     setState(() {
+            //       _data[index].isExpanded = !isExpanded;
+            //     });
+            //   },
+            //   children: _data.map<ExpansionPanel>((item) {
+            //     return ExpansionPanel(
+            //         headerBuilder: (BuildContext context, bool isExpanded) {
+            //           return ListTile(
+            //             title: Text(item.headerValue),
+            //           );
+            //         },
+            //         body: ListTile(
+            //           title: Text(item.expandedValue),
+            //           subtitle: Text("To delete this panedl "),
+            //           trailing: Icon(Icons.delete),
+            //           onTap: () {
+            //             _data.removeWhere((currentItem) => item == currentItem);
+            //           },
+            //         ),
+            //         isExpanded: item.isExpanded);
+            //   }).toList(),
+            // ),
+            _buildGroups(),
             Expanded(child: _buildUserList()),
           ],
         ),
@@ -77,28 +113,41 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageInputField() {
     return CustomMessageFiled(
-      onChange: (value) {},
-      messageController: _messageController,
-      onPressed: () async {
-        if (_messageController.text.isNotEmpty) {
-          _chatService.sendMessage(
-              reciverId ?? currentUSer.uid, _messageController.text);
-          _messageController.clear();
-          _listMessageController.animateTo(
-            0,
-            duration: const Duration(microseconds: 500),
-            curve: Curves.bounceInOut,
-          );
-        }
-      },
-    );
+        onChange: (value) {},
+        messageController: _messageController,
+        onPressed: () async {
+          if (!isGroup) {
+            if (_messageController.text.isNotEmpty) {
+              _chatService.sendMessage(
+                  reciverId ?? currentUSer.uid, _messageController.text);
+              _messageController.clear();
+              _listMessageController.animateTo(
+                0,
+                duration: const Duration(microseconds: 500),
+                curve: Curves.bounceInOut,
+              );
+            }
+          } else {
+            if (_messageController.text.isNotEmpty) {
+              _chatService.sendMessageToGroup(
+                  groupName: reciverId!, message: _messageController.text);
+              _messageController.clear();
+              _listMessageController.animateTo(0,
+                  duration: const Duration(microseconds: 500),
+                  curve: Curves.bounceInOut);
+            }
+          }
+        });
   }
 
   Widget _buildListMessage() {
     return StreamBuilder(
-        stream: _chatService.getMessage(
-            otherUserId: reciverId ?? FirebaseAuth.instance.currentUser!.uid,
-            userId: FirebaseAuth.instance.currentUser!.uid),
+        stream: isGroup
+            ? _chatService.getMessageFromGroup(groupName: reciverId!)
+            : _chatService.getMessage(
+                otherUserId:
+                    reciverId ?? FirebaseAuth.instance.currentUser!.uid,
+                userId: FirebaseAuth.instance.currentUser!.uid),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -177,6 +226,32 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
+  Widget _buildGroups() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _chatService.getGroups(
+          user: BlocProvider.of<LoginStateCubit>(context).userModel!),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Error'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return SingleChildScrollView(
+          child: Expanded(
+            child: ExpansionTile(
+              title: Text('Groups'),
+              children: snapshot.data!.docs
+                  .map<Widget>(
+                      (doc) => _buildGroupItem(GroupModel.fromDocs(doc)))
+                  .toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
       stream: _chatService.getFriends(
@@ -188,11 +263,35 @@ class _ChatPageState extends State<ChatPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        return ListView(
-          children: snapshot.data!.docs
-              .map<Widget>((doc) => _buildUserItem(UserModel.fromDocs(doc)))
-              .toList(),
+        return SingleChildScrollView(
+          child: ExpansionTile(
+            title: Text('Friends'),
+            children: snapshot.data!.docs
+                .map<Widget>((doc) => _buildUserItem(UserModel.fromDocs(doc)))
+                .toList(),
+          ),
         );
+      },
+    );
+  }
+
+  Widget _buildGroupItem(GroupModel group) {
+    return ListTile(
+      leading: Icon(Icons.people),
+      title: Text(
+        group.group_name,
+        style: TextStyle(
+            color: BlocProvider.of<ModeStateCubit>(context).mode
+                ? Colors.white
+                : Colors.black),
+      ),
+      onTap: () {
+        setState(() {
+          pageTitle = group.group_name;
+          isGroup = true;
+
+          reciverId = group.group_name;
+        });
       },
     );
   }
@@ -227,6 +326,7 @@ class _ChatPageState extends State<ChatPage> {
       onTap: () {
         setState(() {
           pageTitle = friend.getFullName();
+          isGroup = false;
 
           reciverId = friend.uid!;
         });
@@ -324,4 +424,16 @@ class _ChatPageState extends State<ChatPage> {
           );
         });
   }
+}
+
+class Item {
+  Item({
+    required this.expandedValue,
+    required this.headerValue,
+    this.isExpanded = true,
+  });
+
+  String expandedValue;
+  String headerValue;
+  bool isExpanded;
 }
