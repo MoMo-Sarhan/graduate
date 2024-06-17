@@ -19,7 +19,7 @@ class BotPage extends StatefulWidget {
 class _BotPageState extends State<BotPage> {
   final TextEditingController messageController = TextEditingController();
   final _cohereClient = CohereClient();
-  final List<String> _chatHistory = [];
+  List<String> _chatHistory = [];
   final _messageControl = TextEditingController();
   final _listController = ScrollController();
   String _response = '';
@@ -41,13 +41,40 @@ class _BotPageState extends State<BotPage> {
                 child: Text('error'),
               );
             }
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('${snapshot.data![index]}'),
-                );
-              },
+            return Column(
+              children: [
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _chatHistory.clear();
+                      });
+                    },
+                    child: Text('New Chat')),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text('${snapshot.data![index]}'),
+                        onTap: () async {
+                          _chat = snapshot.data![index];
+                          final history =
+                              await _cohereClient.getChat(chat: _chat);
+                          _chatHistory.clear();
+                          history.forEach((e) {
+                            String message = e['message'];
+                            String response = e['response'];
+                            _chatHistory.add('Bot: $_response');
+                            _chatHistory.add('You: $message');
+                          });
+                          log(history.toString());
+                          setState(() {});
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             );
           },
         ),

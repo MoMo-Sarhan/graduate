@@ -71,7 +71,7 @@ class CohereClient {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
         if (data.containsKey('collections')) {
           List<dynamic> collections = data['collections'];
-          collections.add(chat);
+          collections.insert(0, chat);
           await docRef.update({'collections': collections.toSet()});
         }
       } else {
@@ -109,6 +109,23 @@ class CohereClient {
         }
       }
       return ['no collection found'];
+    } catch (e) {
+      log(e.toString());
+      return ['error'];
+    }
+  }
+
+  Future<List<dynamic>> getChat({required String chat}) async {
+    try {
+      CollectionReference collectionRef = history
+          .doc('canva')
+          .collection(_currentUser.uid!)
+          .doc('chat')
+          .collection(chat);
+      QuerySnapshot snapshot =
+          await collectionRef.orderBy('time', descending: true).get();
+      List<dynamic> messages = snapshot.docs.map((e) => e.data()).toList();
+      return messages;
     } catch (e) {
       log(e.toString());
       return ['error'];
