@@ -5,6 +5,7 @@ import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/cubits/Navigation_cubits/navigation_cubit.dart';
+import 'package:graduate/screens/login_screen.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -23,7 +24,7 @@ class AuthGate extends StatelessWidget {
           if (appPage == AppPage.home) {
             return MainPage();
           } else {
-            return LoginPage();
+            return LoginScreen();
           }
         });
       },

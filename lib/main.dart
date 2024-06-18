@@ -14,6 +14,7 @@ import 'package:graduate/cubits/Navigation_cubits/navigation_cubit.dart';
 import 'package:graduate/firebase_options.dart';
 import 'package:graduate/Pages/AuthGate.dart';
 import 'package:graduate/models/login_bloc_observer.dart';
+import 'package:graduate/screens/sign_up.dart';
 
 void main() async {
   Bloc.observer = LoginBlocObserver();
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
                 LoginPage.ID: (context) => LoginPage(),
                 AddPostPage.ID: (context) => const AddPostPage(),
                 ChatPage.ID: (context) => const ChatPage(),
+                SignUpScreen.id: (context) => const SignUpScreen(),
                 SearchPostPage.ID: (context) => const SearchPostPage(),
                 AddGroupPage.id: (context) => const AddGroupPage(),
               },
