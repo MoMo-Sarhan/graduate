@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/user_model.dart';
@@ -13,6 +12,7 @@ class SignUpScreen extends StatefulWidget {
   static const id = 'Sign up Screen';
 
   @override
+  // ignore: library_private_types_in_public_api
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
@@ -287,8 +287,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Expanded(
                                     child: TextFormField(
                                       validator: (value) {
-                                        if (value == null || value.isEmpty)
+                                        if (value == null || value.isEmpty) {
                                           return 'Enter first name';
+                                        }
                                         return null;
                                       },
                                       controller: _firstNameController,
@@ -312,8 +313,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Expanded(
                                     child: TextFormField(
                                       validator: (value) {
-                                        if (value == null || value.isEmpty)
+                                        if (value == null || value.isEmpty) {
                                           return 'Enter last name';
+                                        }
                                         return null;
                                       },
                                       controller: _lastNameController,
@@ -345,8 +347,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               // Email TextField
                               TextFormField(
                                 validator: (value) {
-                                  if (value == null || value.isEmpty)
+                                  if (value == null || value.isEmpty) {
                                     return 'Enter Email';
+                                  }
                                   return null;
                                 },
                                 controller: _emailController,
@@ -483,15 +486,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
       try {
         await BlocProvider.of<LoginStateCubit>(context)
             .SignUpWithEmailandPassword(user: user);
+        // ignore: use_build_context_synchronously
         Navigator.pop(context);
       } catch (e) {
         showDialog(
+            // ignore: use_build_context_synchronously
             context: context,
             builder: (context) {
               return AlertDialog(
                 content: Text(e.toString()),
               );
             });
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
       }
