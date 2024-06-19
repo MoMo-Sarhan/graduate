@@ -204,7 +204,7 @@ class _PostCardState extends State<PostCard> {
                       // Navigate to Comments Page
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return CommentsScreen();
+                        return CommentsScreen(post: widget.post,);
                       }));
                     },
                     child: Image.asset(

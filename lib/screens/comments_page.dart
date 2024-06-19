@@ -1,64 +1,25 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
+import 'package:graduate/helper/get_time_formate.dart';
+import 'package:graduate/models/comment_model.dart';
+import 'package:graduate/models/post_card_model.dart';
+import 'package:graduate/models/user_model.dart';
+import 'package:graduate/services/chooseIcons_services.dart';
 
-class CommentsScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> comments = [
-    {
-      'username': 'Majd Abdulaziz',
-      'comment': 'مواصفات جهازك',
-      'time': '15m',
-      'replies': [
-        {
-          'username': 'Mohammed Essa Gmal',
-          'comment': 'gtx1660',
-          'time': '10m',
-        },
-      ],
-    },
-    {
-      'username': 'محمد الرعود',
-      'comment': 'افشل لعبة نزلت في تاريخ',
-      'time': '35m',
-      'replies': [
-        {
-          'username': 'Mohammed Essa Gmal',
-          'comment': 'ليش',
-          'time': '30m',
-        },
-      ],
-    },
-    {
-      'username': 'Ahmad Abbas',
-      'comment': 'اسم اللعبة و مواصفات جهازك',
-      'time': '45m',
-      'replies': [
-        {
-          'username': 'Mohammed Essa Gmal',
-          'comment': 'ستار فيلد',
-          'time': '40m',
-        },
-      ],
-    },
-    {
-      'username': 'Yusuf Mohamed Samy',
-      'comment': 'دا خرز دا ولا أي',
-      'time': '46m',
-      'replies': [
-        {
-          'username': 'Mohammed Essa Gmal',
-          'comment': 'ههه لا دمك خفيف',
-          'time': '41m',
-        },
-      ],
-    },
-    {
-      'username': 'Maki Zenin',
-      'comment': 'عندي كرت rtx 3060 كم ممكن توصل فريمات',
-      'time': '50m',
-      'replies': [],
-    },
-  ];
+class CommentsScreen extends StatefulWidget {
+  CommentsScreen({super.key, required this.post});
+  final PostCardModel post;
 
-  CommentsScreen({super.key});
+  @override
+  State<CommentsScreen> createState() => _CommentsScreenState();
+}
+
+class _CommentsScreenState extends State<CommentsScreen> {
+  final TextEditingController _commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -70,37 +31,89 @@ class CommentsScreen extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                itemCount: comments.length,
-                itemBuilder: (context, index) {
-                  // Check if the data is of the expected type
-                  final commentData = comments[index];
-                  final replies = commentData['replies'];
-                  if (replies is List) {
-                    return CommentCard(
-                      username: commentData['username'] ?? '',
-                      comment: commentData['comment'] ?? '',
-                      time: commentData['time'] ?? '',
-                      replies: replies.cast<Map<String, dynamic>>(),
-                    );
-                  }
-                  return const SizedBox
-                      .shrink(); // Empty widget for invalid data
-                },
-              ),
+              child: _buildCommentsList(),
+
+              // ListView.builder(
+              //   itemCount: comments.length,
+              //   itemBuilder: (context, index) {
+              //     // Check if the data is of the expected type
+              //     final commentData = comments[index];
+              //     final replies = commentData['replies'];
+              //     if (replies is List) {
+              // return CommentCard(
+              //         username: commentData['username'] ?? '',
+              //         comment: commentData['comment'] ?? '',
+              //         time: commentData['time'] ?? '',
+              //         replies: replies.cast<Map<String, dynamic>>(),
+              //       );
+              //     }
+              //     return const SizedBox
+              //         .shrink(); // Empty widget for invalid data
+              //   },
+              // ),
             ),
-            const CommentInputField(),
+            CommentInputField(post: widget.post),
           ],
         ),
       ),
       resizeToAvoidBottomInset: true,
     );
   }
+
+  Stream<QuerySnapshot> getComments() {
+    return FirebaseFirestore.instance
+        .collection(widget.post.collection!)
+        .doc(widget.post.postId)
+        .collection('comments')
+        .orderBy('timestamp')
+        .snapshots();
+  }
+
+  Widget _buildCommentsList() {
+    return StreamBuilder(
+        stream: getComments(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            log(snapshot.error.toString());
+            return const Center(
+              child: Text('Error'),
+            );
+          }
+          List<CommentModel> comments = [];
+          for (var doc in snapshot.data!.docs) {
+            comments.add(CommentModel.fromDoc(doc));
+            comments.last.id = doc.id;
+          }
+          return ListView.builder(
+              itemCount: comments.length,
+              itemBuilder: (context, index) {
+                return CommentCard(
+                  comment: comments[index],
+                  post: widget.post,
+                );
+              });
+        });
+  }
 }
 
-class CommentInputField extends StatelessWidget {
-  const CommentInputField({super.key});
+class CommentInputField extends StatefulWidget {
+  CommentInputField({
+    super.key,
+    required this.post,
+  });
+  final PostCardModel post;
 
+  @override
+  State<CommentInputField> createState() => _CommentInputFieldState();
+}
+
+class _CommentInputFieldState extends State<CommentInputField> {
+  final _commentController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -113,6 +126,7 @@ class CommentInputField extends StatelessWidget {
           children: [
             Expanded(
               child: TextField(
+                controller: _commentController,
                 decoration: InputDecoration(
                   hintText: 'Write a comment...',
                   border: OutlineInputBorder(
@@ -123,29 +137,52 @@ class CommentInputField extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.send),
-              onPressed: () {
-                // Handle sending comment
-              },
+              onPressed: addComment,
             ),
           ],
         ),
       ),
     );
   }
+
+  Future<void> addComment() async {
+    log('pressed');
+    UserModel currentUser =
+        BlocProvider.of<LoginStateCubit>(context).userModel!;
+    log('2');
+    if (_commentController.text.isNotEmpty) {
+      var selectedPost = FirebaseFirestore.instance
+          .collection(widget.post.collection!)
+          .doc(widget.post.postId);
+      var postData = await selectedPost.get();
+      int numComment = postData['commentNum'];
+      numComment++;
+      await selectedPost.update({
+        'commentNum': numComment,
+      });
+      log('2');
+      if (!postData.data()!.containsKey('comments')) {}
+      selectedPost.collection('comments').add({
+        'uid': currentUser.uid,
+        'userName': currentUser.getFullName(),
+        'content': _commentController.text,
+        'timestamp': Timestamp.now()
+      });
+      _commentController.clear();
+      log('done');
+    }
+    log('2');
+  }
 }
 
 class CommentCard extends StatelessWidget {
-  final String username;
-  final String comment;
-  final String time;
-  final List<Map<String, dynamic>> replies;
+  final CommentModel comment;
+  final PostCardModel post;
 
   const CommentCard({
     super.key,
-    required this.username,
     required this.comment,
-    required this.time,
-    required this.replies,
+    required this.post,
   });
 
   @override
@@ -162,27 +199,24 @@ class CommentCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
-                    backgroundImage:
-                        NetworkImage('https://via.placeholder.com/150'),
-                  ),
+                  _buildCircualarAvatar(),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      username,
+                      comment.userName,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                   Text(
-                    time,
+                    getTime(post.time),
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
-                comment,
+                comment.content,
                 style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 8),
@@ -204,26 +238,40 @@ class CommentCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if (replies.isNotEmpty) ...[
-                Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: replies.map((reply) {
-                      return CommentCard(
-                        username: reply['username'] ?? '',
-                        comment: reply['comment'] ?? '',
-                        time: reply['time'] ?? '',
-                        replies: const [],
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
+              // if (replies.isNotEmpty) ...[
+              //   Padding(
+              //     padding: const EdgeInsets.only(left: 40),
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: replies.map((reply) {
+              //         return CommentCard(
+              //           username: reply['username'] ?? '',
+              //           comment: reply['comment'] ?? '',
+              //           time: reply['time'] ?? '',
+              //           replies: const [],
+              //         );
+              //       }).toList(),
+              //     ),
+              //   ),
+              // ],
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCircualarAvatar() {
+    return FutureBuilder(
+      future: ChooseIconService().getImageByUid(uid: post.userUid),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return const Icon(Icons.error);
+        }
+        return CircleAvatar(backgroundImage: NetworkImage(snapshot.data!));
+      },
     );
   }
 }
