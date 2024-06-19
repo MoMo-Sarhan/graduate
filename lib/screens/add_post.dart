@@ -1,6 +1,14 @@
+import 'dart:developer';
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
+import 'package:graduate/models/post_card_model.dart';
+import 'package:graduate/models/user_model.dart';
+import 'package:graduate/services/community_services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreatePostPage extends StatefulWidget {
@@ -12,6 +20,7 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   XFile? _imageFile;
+  String? imagePath;
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _textController = TextEditingController();
 
@@ -25,18 +34,51 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      _imageFile = pickedFile;
-    });
+  Future<void> chooseImage({required bool fromCamera}) async {
+    XFile? pickedFile;
+    if (fromCamera) {
+      pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    } else {
+      pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    }
+    if (pickedFile != null) {
+      // You can now upload the picked image to Firebase Storage
+      setState(() {
+        imagePath = pickedFile?.path ?? '';
+        _imageFile = pickedFile;
+      });
+      log(imagePath ?? 'not loading image');
+    }
   }
 
-  void _post() {
-    // Handle the post action here
-    print("Post button clicked");
+  Future<String?> uploadImage(String filePath) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    String imageName = filePath.split('/').last;
+
+    if (user != null) {
+      Reference storageRef = FirebaseStorage.instance
+          .ref()
+          .child('user_post_image/${user.uid}/$imageName');
+
+      try {
+        await storageRef.putFile(File(filePath));
+        log('Image uploaded successfully');
+        return await storageRef.getDownloadURL();
+      } catch (e) {
+        log('Error uploading image: $e');
+        return null;
+      }
+    }
+    return null;
   }
+  // Future<void> _pickImage() async {
+  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+  //   setState(() {
+  //     _imageFile = pickedFile;
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -63,7 +105,40 @@ class _CreatePostPageState extends State<CreatePostPage> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextButton(
-              onPressed: _isPostButtonEnabled ? _post : null,
+              onPressed: _isPostButtonEnabled
+                  ? () async {
+                      if (_textController.text.isNotEmpty ||
+                          imagePath != null) {
+                        String userUid = FirebaseAuth.instance.currentUser!.uid;
+                        String? imageUrl;
+                        UserModel user =
+                            BlocProvider.of<LoginStateCubit>(context)
+                                .userModel!;
+                        if (imagePath != null) {
+                          imageUrl = await uploadImage(imagePath!);
+                        }
+                        PostCardModel post = PostCardModel(
+                          userName: user.getFullName(),
+                          userUid: userUid,
+                          time: Timestamp.now(),
+                          content: _textController.text,
+                          imagePath: imageUrl,
+                          likes: 0,
+                          postId: '',
+                          commentNum: 0,
+                          commentsList: [],
+                          file: '',
+                          likesList: [],
+                          ifIsLiked: false,
+                          // file: ,
+                        );
+                        _textController.clear();
+                        await CommunityServices()
+                            .addPost(post: post, user: user);
+                        Navigator.pop(context);
+                      }
+                    }
+                  : null,
               child: const Text(
                 'Post',
                 style: TextStyle(
@@ -81,20 +156,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
-              const Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage:
-                        NetworkImage('https://via.placeholder.com/150'),
-                    radius: 20,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    'Mohamed Adel',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ],
-              ),
               const SizedBox(height: 10),
               TextField(
                 controller: _textController,
@@ -114,7 +175,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ElevatedButton.icon(
                   icon: const Icon(Icons.photo),
                   label: const Text('Photo/video'),
-                  onPressed: _pickImage,
+                  onPressed: () async {
+                    await chooseImage(fromCamera: true);
+                  },
                   style: ButtonStyle(
                     foregroundColor: WidgetStateProperty.resolveWith<Color>(
                         (Set<WidgetState> states) {
