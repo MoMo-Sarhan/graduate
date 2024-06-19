@@ -12,6 +12,7 @@ import 'package:graduate/component/custom_naviagton_button.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/models/customNavigationbutton.dart';
+import 'package:graduate/screens/posts_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -55,9 +56,9 @@ class _MainPageState extends State<MainPage> {
                 onpressed: () {},
                 index: 3)
           ]);
-          pages.addAll(const [
+          pages.addAll([
             HomePage(),
-            CommunityPage(),
+            PostPage(),
             BotPage(),
             ProfilePage(),
           ]);
@@ -83,9 +84,9 @@ class _MainPageState extends State<MainPage> {
                 onpressed: () {},
                 index: 4)
           ]);
-          pages.addAll(const [
+          pages.addAll([
             HomePage(),
-            CommunityPage(),
+            PostPage(),
             BotPage(),
             CoursesPage(),
             ProfilePage(),
