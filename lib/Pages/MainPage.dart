@@ -15,6 +15,7 @@ import 'package:graduate/models/customNavigationbutton.dart';
 import 'package:graduate/screens/bots_screen.dart';
 import 'package:graduate/screens/courses_screen.dart';
 import 'package:graduate/screens/posts_page.dart';
+import 'package:graduate/screens/settings.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -63,7 +64,8 @@ class _MainPageState extends State<MainPage> {
             PostPage(),
             BotPage(),
             // BotPage(),
-            ProfilePage(),
+            // ProfilePage(),
+            SettingScreen()
           ]);
         } else {
           buttonsBar.addAll([
@@ -94,7 +96,8 @@ class _MainPageState extends State<MainPage> {
             // BotPage(),
             CoursesScreen(),
             // CoursesPage(),
-            ProfilePage(),
+            // ProfilePage(),
+            SettingScreen()
           ]);
         }
         log(state.toString());
