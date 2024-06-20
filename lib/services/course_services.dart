@@ -15,7 +15,10 @@ class CourseService {
 
   Future<List<Reference>?> getLevelDirs(
       {required BuildContext context, required String link}) async {
-    UserModel user = BlocProvider.of<LoginStateCubit>(context).userModel!;
+    UserModel? user = BlocProvider.of<LoginStateCubit>(context).userModel;
+    if (user == null) {
+      return [];
+    }
     String passlink = 'courses/level_${user.level}/${user.department}';
     if (link.isNotEmpty) {
       passlink = link;
@@ -78,7 +81,8 @@ class CourseService {
               controller: courseNameController,
               onSubmitted: (value) async {
                 try {
-                  await storgeRef.child('$link/${courseNameController.text}')
+                  await storgeRef
+                      .child('$link/${courseNameController.text}')
                       .putString('');
                   log('Created suddfafy');
                 } catch (e) {

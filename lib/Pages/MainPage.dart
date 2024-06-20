@@ -48,17 +48,18 @@ class _MainPageState extends State<MainPage> {
     return BlocBuilder<LoginStateCubit, SignUpState>(
       builder: (context, state) {
         if (state is SignUpAsGeneral) {
+          double width = MediaQuery.of(context).size.width / 10;
           newButtonBar.addAll(<Widget>[
-            Image.asset('assets/home.png', width: 30, height: 30),
-            Image.asset('assets/chat.png', width: 30, height: 30),
+            Image.asset('assets/home.png', width: width, height: 30),
+            Image.asset('assets/communication.png', width: width, height: 40),
             Image.asset(
               'assets/community.png',
               width: 30,
               height: 30,
             ),
-            Image.asset('assets/chatbot.png', width: 30, height: 30),
+            Image.asset('assets/chatbot.png', width: width, height: 30),
             // Image.asset('assets/online-course.png', width: 30, height: 30),
-            Image.asset('assets/setting.png', width: 30, height: 30),
+            Image.asset('assets/setting.png', width: width, height: 30),
           ]);
           // buttonsBar.addAll([
           //   MyBottomBarModel(
@@ -80,7 +81,8 @@ class _MainPageState extends State<MainPage> {
             HomePage(),
             ChatPage(),
             PostPage(),
-            BotPage(),
+            BotsScreen(),
+            // BotPage(),
             // BotPage(),
             // ProfilePage(),
             SettingScreen()
@@ -88,7 +90,7 @@ class _MainPageState extends State<MainPage> {
         } else {
           newButtonBar.addAll(<Widget>[
             Image.asset('assets/home.png', width: 30, height: 30),
-            Image.asset('assets/chat.png', width: 30, height: 30),
+            Image.asset('assets/communication.png', width: 30, height: 30),
             Image.asset(
               'assets/community.png',
               width: 30,
@@ -144,6 +146,7 @@ class _MainPageState extends State<MainPage> {
                   _selectedPage = value;
                 });
                 log(_selectedPage.toString());
+                log(pages.length.toString());
               },
             ),
             bottomNavigationBar: CurvedNavigationBar(
@@ -180,13 +183,5 @@ class _MainPageState extends State<MainPage> {
             );
       },
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedPage = index;
-      _pageController.jumpToPage(_selectedPage);
-      log(_selectedPage.toString());
-    });
   }
 }
