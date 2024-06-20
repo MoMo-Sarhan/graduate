@@ -13,6 +13,7 @@ import 'package:graduate/component/custom_naviagton_button.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/models/customNavigationbutton.dart';
+import 'package:graduate/screens/bot_chat_screen.dart';
 import 'package:graduate/screens/bots_screen.dart';
 import 'package:graduate/screens/chat_page.dart';
 import 'package:graduate/screens/courses_screen.dart';
@@ -28,8 +29,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final PageController _pageController = PageController();
-  int _page = 0;
   int _selectedPage = 0;
+
   @override
   void initState() {
     super.initState();
@@ -40,8 +41,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<MyBottomBarModel> buttonsBar = [];
     List<Widget> newButtonBar = [];
+    List<MyBottomBarModel> buttonsBar = [];
     List<Widget> pages = [];
 
     return BlocBuilder<LoginStateCubit, SignUpState>(
@@ -50,8 +51,12 @@ class _MainPageState extends State<MainPage> {
           newButtonBar.addAll(<Widget>[
             Image.asset('assets/home.png', width: 30, height: 30),
             Image.asset('assets/chat.png', width: 30, height: 30),
-            Image.asset('assets/communication.png', width: 30, height: 30),
-            // Image.asset('assets/chatbot.png', width: 30, height: 30),
+            Image.asset(
+              'assets/community.png',
+              width: 30,
+              height: 30,
+            ),
+            Image.asset('assets/chatbot.png', width: 30, height: 30),
             // Image.asset('assets/online-course.png', width: 30, height: 30),
             Image.asset('assets/setting.png', width: 30, height: 30),
           ]);
@@ -72,10 +77,10 @@ class _MainPageState extends State<MainPage> {
           //       index: 3)
           // ]);
           pages.addAll([
-            const HomePage(),
+            HomePage(),
+            ChatPage(),
             PostPage(),
-            BotsScreen(),
-            // BotPage(),
+            BotPage(),
             // BotPage(),
             // ProfilePage(),
             SettingScreen()
@@ -84,7 +89,11 @@ class _MainPageState extends State<MainPage> {
           newButtonBar.addAll(<Widget>[
             Image.asset('assets/home.png', width: 30, height: 30),
             Image.asset('assets/chat.png', width: 30, height: 30),
-            Image.asset('assets/communication.png', width: 30, height: 30),
+            Image.asset(
+              'assets/community.png',
+              width: 30,
+              height: 30,
+            ),
             Image.asset('assets/chatbot.png', width: 30, height: 30),
             Image.asset('assets/online-course.png', width: 30, height: 30),
             Image.asset('assets/setting.png', width: 30, height: 30),
@@ -111,7 +120,7 @@ class _MainPageState extends State<MainPage> {
           //       index: 4)
           // ]);
           pages.addAll([
-            const HomePage(),
+            HomePage(),
             ChatPage(),
             PostPage(),
             BotsScreen(),
@@ -131,19 +140,27 @@ class _MainPageState extends State<MainPage> {
               itemBuilder: (context, index) => pages[index],
               controller: _pageController,
               onPageChanged: (value) {
-                setState(() => _selectedPage = value);
+                setState(() {
+                  _selectedPage = value;
+                });
                 log(_selectedPage.toString());
               },
             ),
             bottomNavigationBar: CurvedNavigationBar(
-              index: _page,
+              index: _selectedPage,
               items: newButtonBar,
               color: Colors.white,
               buttonBackgroundColor: Colors.white,
               backgroundColor: const Color(0xffB9B4F6),
               animationCurve: Curves.easeInOut,
               animationDuration: const Duration(milliseconds: 600),
-              onTap: _onItemTapped,
+              onTap: (value) {
+                setState(() {
+                  _selectedPage = value.toInt();
+                  log(_selectedPage.toString());
+                });
+                _pageController.jumpToPage(_selectedPage);
+              },
             )
             // GNav(
             //     onTabChange: (value) {
@@ -167,8 +184,9 @@ class _MainPageState extends State<MainPage> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _page = index;
-      _pageController.jumpToPage(index);
+      _selectedPage = index;
+      _pageController.jumpToPage(_selectedPage);
+      log(_selectedPage.toString());
     });
   }
 }
