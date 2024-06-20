@@ -76,6 +76,7 @@ class ChooseIconService {
   }
 
   Future<String>? getImageByUid({required String? uid}) async {
+    if (uid == null) return 'https://via.placeholder.com/150';
     Reference storageRef =
         FirebaseStorage.instance.ref().child('user_images/$uid/');
     try {

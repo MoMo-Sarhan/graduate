@@ -22,21 +22,10 @@ class _CoursesScreenState extends State<CoursesScreen>
   @override
   void initState() {
     super.initState();
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   for (int i = 0; i < _controllers.length; i++) {
-    //     Future.delayed(Duration(milliseconds: 100 * i), () {
-    //       _controllers[i].forward();
-    //     });
-    //   }
-    // });
   }
 
   @override
   void dispose() {
-    // for (final controller in _controllers) {
-    //   controller.dispose();
-    // }
     super.dispose();
   }
 
@@ -76,37 +65,6 @@ class _CoursesScreenState extends State<CoursesScreen>
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: _buildCourseList(),
-
-          // GridView.builder(
-          //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          //     crossAxisCount: 2,
-          //     crossAxisSpacing: 16.0,
-          //     mainAxisSpacing: 16.0,
-          //     childAspectRatio: 0.75,
-          //   ),
-          //   itemCount: courses.length,
-          //   itemBuilder: (context, index) {
-          //     final course = courses[index];
-          //     return FadeTransition(
-          //       opacity: _animations[index],
-          //       child: GestureDetector(
-          //         onTap: () {
-          //           Navigator.push(context,
-          //               MaterialPageRoute(builder: (context) {
-          //             return CourseDetailPage(
-          //               name: course['name']!,
-          //               imageUrl: course['imageUrl']!,
-          //             );
-          //           }));
-          //         },
-          //         child: CourseCard(
-          //           name: course['name']!,
-          //           imageUrl: course['imageUrl']!,
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
         ),
       ),
       floatingActionButton: CustomFloationButton(
@@ -145,12 +103,6 @@ class _CoursesScreenState extends State<CoursesScreen>
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                //   return CourseDetailPage(
-                //     name: '',
-                //     imageUrl: '',
-                //   );
-                // }));
               },
               child: CourseCard(
                 onTap: () {
@@ -167,30 +119,6 @@ class _CoursesScreenState extends State<CoursesScreen>
             );
           },
         );
-        // CustomScrollView(
-        //   slivers: [
-        //     SliverGrid.builder(
-        //       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        //         maxCrossAxisExtent: 200,
-        //         mainAxisExtent: 150,
-        //         crossAxisSpacing: 1,
-        //       ),
-        //       itemCount: snapshot.data!.length,
-        //       itemBuilder: (context, index) => ContainerCourse(
-        //         onTap: () {
-        //           setState(() {
-        //             link = snapshot.data![index].fullPath;
-        //           });
-        //           if (isFile(text: link)) {
-        //             CourseService().downloadFile(ref: snapshot.data![index]);
-        //           }
-        //           log(link);
-        //         },
-        //         ref: snapshot.data![index],
-        //       ),
-        //     ),
-        //   ],
-        // );
       },
     );
   }
