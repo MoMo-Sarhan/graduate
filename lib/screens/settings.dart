@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/Pages/setting_pages/Rating_Page.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/screens/edit_profile_page.dart';
+import 'package:graduate/services/chooseIcons_services.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -77,22 +80,44 @@ class _SettingScreenState extends State<SettingScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          const Center(
+          Center(
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
-                      'https://via.placeholder.com/150'), // Replace with the actual image URL
+                FutureBuilder(
+                  future: ChooseIconService().getImageByUid(
+                      uid: FirebaseAuth.instance.currentUser?.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Errror'),
+                      );
+                    } else if (snapshot.data == null) {
+                      return const Center(
+                        child: Text('Null data'),
+                      );
+                    } else {
+                      return SafeArea(
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(snapshot.data!),
+                        ),
+                      );
+                    }
+                  },
                 ),
                 SizedBox(height: 16.0),
-                Text(
-                  'Mohamed Adel', // Replace with the actual account name
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                if (BlocProvider.of<LoginStateCubit>(context).userModel != null)
+                  Text(
+                    BlocProvider.of<LoginStateCubit>(context)
+                        .userModel!
+                        .getFullName(), // Replace with the actual account name
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
               ],
             ),
           ),
@@ -127,6 +152,9 @@ class _SettingScreenState extends State<SettingScreen> {
             leading: const Icon(Icons.star_rate),
             title: const Text('Rate Us'),
             onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => RatingPage()));
+
               // Handle rate us
             },
           ),

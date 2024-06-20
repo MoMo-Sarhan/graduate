@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:graduate/services/chooseIcons_services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -18,6 +20,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final ImagePicker _picker = ImagePicker();
+  ChooseIconService _chooseIcon = ChooseIconService();
 
   void _saveProfile() {
     // Save profile changes here
@@ -50,15 +53,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Center(
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: _profileImage != null
-                        ? FileImage(_profileImage!)
-                        : const NetworkImage('https://via.placeholder.com/150')
-                            as ImageProvider,
+                  FutureBuilder(
+                    future: ChooseIconService().getImageByUid(
+                        uid: FirebaseAuth.instance.currentUser?.uid),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Errror'),
+                        );
+                      } else if (snapshot.data == null) {
+                        return const Center(
+                          child: Text('Null data'),
+                        );
+                      } else {
+                        return SafeArea(
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(snapshot.data!),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await _chooseIcon.chooseImage(fromCam: false);
+                      setState(() {});
+                    },
                     child: const Text('Change Profile Picture'),
                   ),
                 ],
@@ -101,7 +124,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: _saveProfile,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              // _saveProfile,
               child: const Text('Save Changes'),
             ),
           ],
