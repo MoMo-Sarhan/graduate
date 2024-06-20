@@ -13,6 +13,7 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/models/customNavigationbutton.dart';
 import 'package:graduate/screens/bots_screen.dart';
+import 'package:graduate/screens/chat_page.dart';
 import 'package:graduate/screens/courses_screen.dart';
 import 'package:graduate/screens/posts_page.dart';
 import 'package:graduate/screens/settings.dart';
@@ -90,7 +91,8 @@ class _MainPageState extends State<MainPage> {
                 index: 4)
           ]);
           pages.addAll([
-            HomePage(),
+            ChatPage(),
+            // HomePage(),
             PostPage(),
             BotsScreen(),
             // BotPage(),

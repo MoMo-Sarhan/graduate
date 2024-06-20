@@ -1,4 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduate/Pages/addGroupPage.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
+import 'package:graduate/models/group_model.dart';
+import 'package:graduate/models/user_model.dart';
+import 'package:graduate/screens/bot_chat_screen.dart';
+import 'package:graduate/screens/private_chat_screen.dart';
+import 'package:graduate/services/chat_services.dart';
+import 'package:graduate/services/chooseIcons_services.dart';
+import 'package:graduate/services/user_data_services.dart';
 
 class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
@@ -9,7 +20,34 @@ class ChatPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Chats'),
+          actions: [
+            PopupMenuButton<String>(
+                position: PopupMenuPosition.under,
+                onSelected: (value) {
+                  if (value == 'New Group') {
+                    Navigator.pushNamed(context, AddGroupPage.id);
+                  }
+                },
+                itemBuilder: (context) {
+                  return const [
+                    PopupMenuItem(
+                        height: 1, value: 'New Group', child: Text('New Group'))
+                  ];
+                })
+          ],
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                      colors: [Colors.blue, Colors.purpleAccent],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ).createShader(bounds),
+                child: const Text('Chats',
+                    style: TextStyle(fontSize: 24, color: Colors.white))),
+          ),
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Group Chats'),
@@ -17,9 +55,9 @@ class ChatPage extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
-            ChatList(type: 'group'),
+            const ChatList(type: 'group'),
             ChatList(type: 'dm'),
           ],
         ),
@@ -28,72 +66,120 @@ class ChatPage extends StatelessWidget {
   }
 }
 
-class ChatList extends StatelessWidget {
+class ChatList extends StatefulWidget {
   final String type;
 
-  ChatList({super.key, required this.type});
+ const  ChatList({super.key, required this.type});
 
-  final List<Map<String, String>> groupChats = [
-    {
-      'name': 'Project Group',
-      'message': 'See you tomorrow for the meeting!',
-      'time': '3:55 PM',
-      'imageUrl': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Study Group',
-      'message': 'Shared the new notes.',
-      'time': '1:20 PM',
-      'imageUrl': 'https://via.placeholder.com/150',
-    },
-  ];
+  @override
+  State<ChatList> createState() => _ChatListState();
+}
 
-  final List<Map<String, String>> dmChats = [
-    {
-      'name': 'Alice',
-      'message': 'Let’s catch up later.',
-      'time': '2:45 PM',
-      'imageUrl': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Bob',
-      'message': 'Can you review my code?',
-      'time': '12:30 PM',
-      'imageUrl': 'https://via.placeholder.com/150',
-    },
-  ];
+class _ChatListState extends State<ChatList> {
+  final ChooseIconService _chooseIconService = ChooseIconService();
+  final _chatService = ChatServices();
+
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> chats = type == 'group' ? groupChats : dmChats;
 
-    return ListView.builder(
-      itemCount: chats.length,
-      itemBuilder: (context, index) {
-        return ChatCard(
-          name: chats[index]['name']!,
-          message: chats[index]['message']!,
-          time: chats[index]['time']!,
-          imageUrl: chats[index]['imageUrl']!,
+    return widget.type == 'group' ? _buildGroups() : _buildUserList();
+  }
+
+  Widget _buildUserList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _chatService.getFriends(
+          user: BlocProvider.of<LoginStateCubit>(context).userModel!),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Error'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return ListView(
+          children: snapshot.data!.docs
+              .map<Widget>((doc) => _buildUserItem(UserModel.fromDocs(doc)))
+              .toList(),
         );
       },
+    );
+  }
+
+  Widget _buildUserItem(UserModel friend) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: ListTile(
+          leading: CircleAvatar(
+              child: FutureBuilder(
+            future: _chooseIconService.getImageByUid(uid: friend.uid!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData &&
+                  snapshot.data != null) {
+                return CircleAvatar(
+                  backgroundImage: NetworkImage(snapshot.data!),
+                );
+              } else {
+                return const Icon(Icons.person);
+              }
+            },
+          )),
+          title: Text(
+            friend.getFullName(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return PrivateChatScreen(friend: friend);
+            }));
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGroups() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _chatService.getGroups(
+          user: BlocProvider.of<LoginStateCubit>(context).userModel!),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Error'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return ListView(
+          children: snapshot.data!.docs
+              .map<Widget>((doc) => _buildGroupItem(GroupModel.fromDocs(doc)))
+              .toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildGroupItem(GroupModel group) {
+    return ChatCard(
+      group: group,
     );
   }
 }
 
 class ChatCard extends StatelessWidget {
-  final String name;
-  final String message;
-  final String time;
-  final String imageUrl;
+  final GroupModel group;
 
   const ChatCard({
     super.key,
-    required this.name,
-    required this.message,
-    required this.time,
-    required this.imageUrl,
+    required this.group,
   });
+  final String imageUrl = 'https://via.placeholder.com/150';
 
   @override
   Widget build(BuildContext context) {
@@ -107,16 +193,10 @@ class ChatCard extends StatelessWidget {
             backgroundImage: NetworkImage(imageUrl),
           ),
           title: Text(
-            name,
+            group.group_name,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(message),
-          trailing: Text(
-            time,
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-          ),
           onTap: () {
-            // Navigate to Chat Detail Page
           },
         ),
       ),

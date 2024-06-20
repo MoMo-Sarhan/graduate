@@ -176,6 +176,7 @@ class _ChatPageState extends State<ChatPage> {
         showPopupMenu(context, document);
       },
       child: MessageContainer(
+        uid: data['senderId'],
         message: data['message'],
         userName: data['senderEmail'].toString().split('@')[0],
         time: data['timestamp'],

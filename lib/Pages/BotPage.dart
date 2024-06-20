@@ -100,21 +100,22 @@ class _BotPageState extends State<BotPage> {
           )),
           Column(children: [
             Expanded(
-                child: ListView.builder(
-                  reverse: true,
-                  controller: _listController,
-                  itemCount: _chatHistory.length,
-                  itemBuilder: (context, index) {
-                    var message = _chatHistory[index];
-                    final isUserMessage = message.startsWith('You: ');
-                    message = message.substring(5);
-                    return MessageContainer(
-                        message: message,
-                        userName: '',
-                        alignment: isUserMessage,
-                        time: Timestamp.now());
-                  },
-                ),
+              child: ListView.builder(
+                reverse: true,
+                controller: _listController,
+                itemCount: _chatHistory.length,
+                itemBuilder: (context, index) {
+                  var message = _chatHistory[index];
+                  final isUserMessage = message.startsWith('You: ');
+                  message = message.substring(5);
+                  return MessageContainer(
+                      uid: null,
+                      message: message,
+                      userName: '',
+                      alignment: isUserMessage,
+                      time: Timestamp.now());
+                },
+              ),
             ),
             CustomMessageFiled(
               messageController: _messageControl,
