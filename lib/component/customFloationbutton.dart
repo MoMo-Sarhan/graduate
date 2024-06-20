@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:graduate/services/course_services.dart';
 import 'package:graduate/utils/animations.dart';
@@ -62,20 +63,42 @@ class _CustomFloationButtonState extends State<CustomFloationButton> {
                       showOption = false;
                     });
                   },
-                  child: const Icon(
-                    Icons.close,
-                    size: 40,
+                  child: ShaderMask(
+                    shaderCallback: (bounds) => const LinearGradient(
+                      colors: [Colors.blue, Colors.purpleAccent],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ).createShader(bounds),
+                    child: const Icon(
+                      Icons.close,
+                      size: 40,
+                    ),
                   ))
-              : IconButton(
-                  onPressed: () {
-                    setState(() {
-                      showOption = true;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    size: 40,
-                  ))
+              : ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Colors.blue, Colors.purpleAccent],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ).createShader(bounds),
+                  child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          showOption = true;
+                        });
+                      },
+                      icon: ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [Colors.blue, Colors.purpleAccent],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ).createShader(bounds),
+                        child: const Icon(
+                          Icons.add,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                      )),
+                )
         ],
       ),
     );

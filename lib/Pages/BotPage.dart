@@ -32,12 +32,12 @@ class _BotPageState extends State<BotPage> {
           future: _cohereClient.getChats(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
             if (snapshot.data == null) {
-              return Center(
+              return const Center(
                 child: Text('error'),
               );
             }
@@ -49,7 +49,7 @@ class _BotPageState extends State<BotPage> {
                         _chatHistory.clear();
                       });
                     },
-                    child: Text('New Chat')),
+                    child: const Text('New Chat')),
                 Expanded(
                   child: ListView.builder(
                     itemCount: snapshot.data!.length,
@@ -100,21 +100,21 @@ class _BotPageState extends State<BotPage> {
           )),
           Column(children: [
             Expanded(
-              child: ListView.builder(
-                reverse: true,
-                controller: _listController,
-                itemCount: _chatHistory.length,
-                itemBuilder: (context, index) {
-                  var message = _chatHistory[index];
-                  final isUserMessage = message.startsWith('You: ');
-                  message = message.substring(5);
-                  return MessageContainer(
-                      message: message,
-                      userName: '',
-                      alignment: isUserMessage,
-                      time: Timestamp.now());
-                },
-              ),
+                child: ListView.builder(
+                  reverse: true,
+                  controller: _listController,
+                  itemCount: _chatHistory.length,
+                  itemBuilder: (context, index) {
+                    var message = _chatHistory[index];
+                    final isUserMessage = message.startsWith('You: ');
+                    message = message.substring(5);
+                    return MessageContainer(
+                        message: message,
+                        userName: '',
+                        alignment: isUserMessage,
+                        time: Timestamp.now());
+                  },
+                ),
             ),
             CustomMessageFiled(
               messageController: _messageControl,

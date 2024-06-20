@@ -12,6 +12,8 @@ import 'package:graduate/component/custom_naviagton_button.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/models/customNavigationbutton.dart';
+import 'package:graduate/screens/bots_screen.dart';
+import 'package:graduate/screens/courses_screen.dart';
 import 'package:graduate/screens/posts_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -60,6 +62,7 @@ class _MainPageState extends State<MainPage> {
             HomePage(),
             PostPage(),
             BotPage(),
+            // BotPage(),
             ProfilePage(),
           ]);
         } else {
@@ -87,8 +90,10 @@ class _MainPageState extends State<MainPage> {
           pages.addAll([
             HomePage(),
             PostPage(),
-            BotPage(),
-            CoursesPage(),
+            BotsScreen(),
+            // BotPage(),
+            CoursesScreen(),
+            // CoursesPage(),
             ProfilePage(),
           ]);
         }
