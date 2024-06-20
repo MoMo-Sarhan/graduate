@@ -124,7 +124,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: (){
                 Navigator.pop(context);
               },
               // _saveProfile,
