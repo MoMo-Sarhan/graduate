@@ -13,7 +13,7 @@ import 'package:graduate/services/community_services.dart';
 import 'package:graduate/widgets/background.dart';
 
 class PostPage extends StatefulWidget {
-  PostPage({super.key});
+  const PostPage({super.key});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -60,6 +60,7 @@ class _PostPageState extends State<PostPage> {
                       itemCount: posts.length,
                       itemBuilder: (context, index) {
                         return PostCard(
+                          context: context,
                           post: posts[index],
                           key: ValueKey(posts[index].postId),
                         );
@@ -68,17 +69,6 @@ class _PostPageState extends State<PostPage> {
               },
             ),
           )
-          // ListView.builder(
-          //   itemCount: posts.length,
-          //   itemBuilder: (context, index) {
-          //     return PostCard(
-          //       author: posts[index]['author']!,
-          //       content: posts[index]['content']!,
-          //       time: posts[index]['time']!,
-          //       imageUrl: posts[index]['imageUrl'],
-          //     );
-          //   },
-          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -116,11 +106,13 @@ class _PostPageState extends State<PostPage> {
 }
 
 class PostCard extends StatefulWidget {
-  final PostCardModel post;
   const PostCard({
     super.key,
     required this.post,
+    required this.context,
   });
+  final PostCardModel post;
+  final BuildContext context;
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -189,7 +181,7 @@ class _PostCardState extends State<PostCard> {
                       width: widget.post.ifIsLiked! ? 25 : 20,
                       height: widget.post.ifIsLiked! ? 25 : 20,
                       child: Image(
-                        image: AssetImage('assets/like.png'),
+                        image: const AssetImage('assets/like.png'),
                         color: widget.post.ifIsLiked!
                             ? Colors.purple
                             : Colors.grey,
@@ -204,7 +196,9 @@ class _PostCardState extends State<PostCard> {
                       // Navigate to Comments Page
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return CommentsScreen(post: widget.post,);
+                        return CommentsScreen(
+                          post: widget.post,
+                        );
                       }));
                     },
                     child: Image.asset(

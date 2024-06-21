@@ -67,10 +67,10 @@ class _PostCardState extends State<PostCard> {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          Future.delayed(Duration(seconds: 1), () {
+                          Future.delayed(const Duration(seconds: 1), () {
                             Navigator.pop(context);
                           });
-                          return AlertDialog(
+                          return const AlertDialog(
                             content: Text('Delete succesuly'),
                           );
                         });
@@ -79,7 +79,7 @@ class _PostCardState extends State<PostCard> {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          Future.delayed(Duration(seconds: 3), () {
+                          Future.delayed(const Duration(seconds: 3), () {
                             Navigator.pop(context);
                           });
                           return AlertDialog(
