@@ -113,7 +113,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
         showPopupMenu(context, document);
       },
       child: MessageContainer(
-        uid: data['senderId'],
+        uid: null,
         message: data['message'],
         userName: data['senderEmail'].toString().split('@')[0],
         time: data['timestamp'],

@@ -1,6 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
@@ -9,6 +12,7 @@ import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({super.key});
@@ -19,6 +23,7 @@ class AddGroupPage extends StatefulWidget {
 }
 
 class _AddGroupPageState extends State<AddGroupPage> {
+  File? groupImage;
   final Set<String> MembersIds = {};
   final TextEditingController _groupNameController = TextEditingController();
   final _chooseIconService = ChooseIconService();
@@ -33,8 +38,16 @@ class _AddGroupPageState extends State<AddGroupPage> {
         ListTile(
           leading: CircleAvatar(
             radius: 25,
+            backgroundImage: groupImage != null ? FileImage(groupImage!) : null,
             backgroundColor: Colors.black.withOpacity(0.2),
-            child: const Icon(Icons.camera_alt),
+            child: IconButton(
+              icon: Icon(Icons.camera_alt),
+              onPressed: () async {
+                groupImage =
+                    File(await _chatServices.pickImage(fromCam: false) ?? '');
+                setState(() {});
+              },
+            ),
           ),
           title: TextField(
             controller: _groupNameController,
@@ -60,7 +73,10 @@ class _AddGroupPageState extends State<AddGroupPage> {
         onPressed: () async {
           if (_groupNameController.text != null &&
               _groupNameController.text.isNotEmpty) {
+            await _chatServices.uploadImage(
+                filePath: groupImage, groupName: _groupNameController.text);
             final GroupModel _group = GroupModel(
+                imagePath: groupImage!.path,
                 level: me.level!,
                 departement: me.department!,
                 group_name: _groupNameController.text,

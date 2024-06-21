@@ -1,11 +1,14 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/message_model.dart';
 import 'package:graduate/models/user_model.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatServices extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -78,6 +81,50 @@ class ChatServices extends ChangeNotifier {
         .where('level', isEqualTo: user.level)
         .where('departement', isEqualTo: user.department)
         .snapshots();
+  }
+
+  Future<String?> pickImage({required bool fromCam}) async {
+    XFile? pickedFile;
+    if (fromCam) {
+      pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    } else {
+      pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    }
+    if (pickedFile != null) {
+      // You can now upload the picked image to Firebase Storage
+      String imagePath = pickedFile.path;
+      return imagePath;
+    }
+    return null;
+  }
+
+  Future<void> uploadImage({File? filePath, String? groupName}) async {
+    if (filePath == null || groupName == null) return;
+    Reference storageRef = FirebaseStorage.instance
+        .ref()
+        .child('group/$groupName/group_image.jpg');
+
+    try {
+      if (groupName == null) throw Exception('the group name is empty');
+      await storageRef.putFile(filePath);
+      log('Image uploaded successfully');
+    } catch (e) {
+      log('Error uploading image: $e');
+    }
+  }
+
+  Future<String>? getGroupImage({required GroupModel group}) async {
+    Reference storageRef = FirebaseStorage.instance
+        .ref()
+        .child('group/${group.group_name}/group_image.jpg');
+    try {
+      String downloadURL = await storageRef.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      log('Error getting group ${group.getFullName()} image URL: $e');
+      // Return a default image URL or handle the error as needed
+      return 'https://via.placeholder.com/150';
+    }
   }
 
   Future<void> sendMessageToGroup(

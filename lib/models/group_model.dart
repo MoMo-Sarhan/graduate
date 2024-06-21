@@ -5,23 +5,23 @@ class GroupModel {
   final int level;
   final String departement;
   final bool permissions;
+  final String imagePath;
   GroupModel({
+    required this.imagePath,
     required this.group_name,
     required this.member_ids,
     required this.admins,
     required this.permissions,
     required this.level,
     required this.departement,
+  });
+  String getFullName() {
+    return this.group_name;
   }
-  
-  
-  );
- String getFullName(){
-  return this.group_name;
- } 
 
   factory GroupModel.fromDocs(data) {
     return GroupModel(
+      imagePath: data['imagePath'],
       group_name: data['group_name'],
       member_ids: data['member_ids'],
       admins: data['admins'],
@@ -34,6 +34,7 @@ class GroupModel {
   Map<String, dynamic> toMap() {
     return {
       'group_name': group_name,
+      'imagePath':imagePath,
       'member_ids': member_ids,
       'admins': admins,
       'permissions': permissions,

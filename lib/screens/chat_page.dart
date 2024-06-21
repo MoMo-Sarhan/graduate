@@ -69,7 +69,7 @@ class ChatPage extends StatelessWidget {
 class ChatList extends StatefulWidget {
   final String type;
 
- const  ChatList({super.key, required this.type});
+  const ChatList({super.key, required this.type});
 
   @override
   State<ChatList> createState() => _ChatListState();
@@ -79,10 +79,8 @@ class _ChatListState extends State<ChatList> {
   final ChooseIconService _chooseIconService = ChooseIconService();
   final _chatService = ChatServices();
 
-
   @override
   Widget build(BuildContext context) {
-
     return widget.type == 'group' ? _buildGroups() : _buildUserList();
   }
 
@@ -174,8 +172,8 @@ class _ChatListState extends State<ChatList> {
 
 class ChatCard extends StatelessWidget {
   final GroupModel group;
-
-  const ChatCard({
+  final ChatServices _chatservices = ChatServices();
+  ChatCard({
     super.key,
     required this.group,
   });
@@ -190,14 +188,31 @@ class ChatCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: ListTile(
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(imageUrl),
-          ),
+              child: FutureBuilder(
+            future: _chatservices.getGroupImage(group: group),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData &&
+                  snapshot.data != null) {
+                return CircleAvatar(
+                  backgroundImage: NetworkImage(snapshot.data!),
+                );
+              } else {
+                return const Icon(Icons.person);
+              }
+            },
+          )),
+          // CircleAvatar(
+          //   backgroundImage: NetworkImage(imageUrl),
+          // ),
           title: Text(
             group.group_name,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          onTap: () {
-          },
+          onTap: () {},
         ),
       ),
     );
