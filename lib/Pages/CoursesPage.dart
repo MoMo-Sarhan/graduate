@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/component/ContainerCourse.dart';
 import 'package:graduate/component/customFloationbutton.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/helper/reusableFunc.dart';
 import 'package:graduate/services/course_services.dart';
 
@@ -19,30 +22,37 @@ class _CoursesPageState extends State<CoursesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-            link.isEmpty ? const Text('Courses') : Text(link.split('/').last),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  log(link);
-                  var parts = link.split('/');
-                  parts.removeLast();
-                  link = parts.join('/');
-                  log(link);
-                });
-              },
-              icon: const Icon(Icons.arrow_upward))
-        ],
-      ),
-      body: RefreshIndicator(
-          onRefresh: () => _refreshPage(), child: _buildCourseList()),
-      floatingActionButton: CustomFloationButton(
-        link: link,
-      ),
-    );
+        appBar: AppBar(
+          title:
+              link.isEmpty ? const Text('Courses') : Text(link.split('/').last),
+          centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    log(link);
+                    var parts = link.split('/');
+                    parts.removeLast();
+                    link = parts.join('/');
+                    log(link);
+                  });
+                },
+                icon: const Icon(Icons.arrow_upward))
+          ],
+        ),
+        body: RefreshIndicator(
+            onRefresh: () => _refreshPage(), child: _buildCourseList()),
+        floatingActionButton: BlocBuilder<LoginStateCubit, SignUpState>(
+            builder: (context, state) {
+          if (state is SignUpAsDoctor) {
+            return CustomFloationButton(
+              link: link,
+            );
+          }
+          return FloatingActionButton(
+            onPressed: () {},
+          );
+        }));
   }
 
   Future<void> _refreshPage() async {

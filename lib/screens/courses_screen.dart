@@ -3,7 +3,10 @@ import 'dart:developer';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/component/customFloationbutton.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
+import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/helper/reusableFunc.dart';
 import 'package:graduate/screens/course_detail_page.dart';
 import 'package:graduate/services/course_services.dart';
@@ -32,45 +35,50 @@ class _CoursesScreenState extends State<CoursesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  log(link);
-                  var parts = link.split('/');
-                  parts.removeLast();
-                  link = parts.join('/');
-                  log(link);
-                });
-              },
-              icon: const Icon(Icons.arrow_upward))
-        ],
-        automaticallyImplyLeading: false,
-        title: ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [Colors.blue, Colors.purpleAccent],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ).createShader(bounds),
-          child: Text(
-            link.isEmpty ? 'Your Courses' : link.split('/').last,
-            style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    log(link);
+                    var parts = link.split('/');
+                    parts.removeLast();
+                    link = parts.join('/');
+                    log(link);
+                  });
+                },
+                icon: const Icon(Icons.arrow_upward))
+          ],
+          automaticallyImplyLeading: false,
+          title: ShaderMask(
+            shaderCallback: (bounds) => const LinearGradient(
+              colors: [Colors.blue, Colors.purpleAccent],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ).createShader(bounds),
+            child: Text(
+              link.isEmpty ? 'Your Courses' : link.split('/').last,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: RefreshIndicator(
+          onRefresh: () => _refreshPage(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _buildCourseList(),
           ),
         ),
-        centerTitle: true,
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshPage(),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: _buildCourseList(),
-        ),
-      ),
-      floatingActionButton: CustomFloationButton(
-        link: link,
-      ),
-    );
+        floatingActionButton: BlocBuilder<LoginStateCubit, SignUpState>(
+            builder: (context, state) {
+          if (state is SignUpAsDoctor) {
+            return CustomFloationButton(
+              link: link,
+            );
+          }
+          return FloatingActionButton(onPressed: () {});
+        }));
   }
 
   Future<void> _refreshPage() async {
@@ -102,8 +110,7 @@ class _CoursesScreenState extends State<CoursesScreen>
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: () {
-              },
+              onTap: () {},
               child: CourseCard(
                 onTap: () {
                   setState(() {

@@ -158,6 +158,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               const SizedBox(height: 20),
                               DropdownButtonFormField<String>(
+                                isExpanded:
+                                    _selectedRole == 'Student' ? true : false,
                                 validator: (value) {
                                   if (value == null) {
                                     return 'Gender can not be null';
@@ -165,8 +167,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  enabled:
-                                      _selectedRole == 'General' ? false : true,
                                   labelText: 'Department',
                                   fillColor: Colors.white.withOpacity(0.2),
                                   filled: true,
@@ -216,9 +216,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               return null;
                                             }
                                           : null,
-                                      enabled: _selectedRole == 'General'
-                                          ? false
-                                          : true,
+                                      enabled: _selectedRole == 'Student'
+                                          ? true
+                                          : false,
                                       controller: _gpaController,
                                       decoration: InputDecoration(
                                         labelText: 'GPA',
@@ -259,9 +259,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                                       controller: _levelController,
                                       decoration: InputDecoration(
-                                        enabled: _selectedRole == 'General'
-                                            ? false
-                                            : true,
+                                        enabled: _selectedRole == 'Student'
+                                            ? true
+                                            : false,
                                         labelText: 'Level',
                                         fillColor:
                                             Colors.white.withOpacity(0.2),
