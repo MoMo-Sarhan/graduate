@@ -132,17 +132,23 @@ class ChatServices extends ChangeNotifier {
     String collection = 'groups';
     DocumentReference docRef =
         FirebaseFirestore.instance.collection(collection).doc(groupName);
-
+    DocumentSnapshot dataOfDoc = await docRef.get();
+    GroupModel group = GroupModel.fromDocs(dataOfDoc);
     final String currentUserId = _firebaseAuth.currentUser!.uid;
-    final Timestamp timestamp = Timestamp.now();
+    if (!group.permissions) throw Exception('send in this group is not allowed');
+    if (group.member_ids.contains(currentUserId)) {
+      final Timestamp timestamp = Timestamp.now();
 
-    MessageModel newMessage = MessageModel(
-        message: message,
-        reciverId: groupName,
-        senderId: currentUserId,
-        timestamp: timestamp);
+      MessageModel newMessage = MessageModel(
+          message: message,
+          reciverId: groupName,
+          senderId: currentUserId,
+          timestamp: timestamp);
 
-    await docRef.collection('messages').add(newMessage.toMap());
+      await docRef.collection('messages').add(newMessage.toMap());
+    } else {
+      throw Exception('you are not a member of that group');
+    }
   }
 
   Future<void> create_group({required GroupModel group}) async {

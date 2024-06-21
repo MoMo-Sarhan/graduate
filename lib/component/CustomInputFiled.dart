@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 class CustomMessageFiled extends StatelessWidget {
   const CustomMessageFiled(
-      {super.key, required this.messageController, required this.onPressed,required this.onChange});
+      {super.key,
+      required this.messageController,
+      required this.onPressed,
+      required this.onChange});
   final TextEditingController messageController;
   final Function() onPressed;
-  final Function(dynamic)onChange;
+  final Function(dynamic) onChange;
 
   @override
   Widget build(BuildContext context) {

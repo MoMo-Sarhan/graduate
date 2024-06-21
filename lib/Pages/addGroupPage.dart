@@ -2,8 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
@@ -12,7 +10,6 @@ import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/services/chat_services.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({super.key});
@@ -24,7 +21,7 @@ class AddGroupPage extends StatefulWidget {
 
 class _AddGroupPageState extends State<AddGroupPage> {
   File? groupImage;
-  final Set<String> MembersIds = {};
+  final Set<String> _membersIds = {};
   final TextEditingController _groupNameController = TextEditingController();
   final _chooseIconService = ChooseIconService();
   List<UserModel> selectedUsers = [];
@@ -41,7 +38,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
             backgroundImage: groupImage != null ? FileImage(groupImage!) : null,
             backgroundColor: Colors.black.withOpacity(0.2),
             child: IconButton(
-              icon: Icon(Icons.camera_alt),
+              icon: const Icon(Icons.camera_alt),
               onPressed: () async {
                 groupImage =
                     File(await _chatServices.pickImage(fromCam: false) ?? '');
@@ -71,20 +68,19 @@ class _AddGroupPageState extends State<AddGroupPage> {
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          if (_groupNameController.text != null &&
-              _groupNameController.text.isNotEmpty) {
+          if (_groupNameController.text.isNotEmpty) {
             await _chatServices.uploadImage(
                 filePath: groupImage, groupName: _groupNameController.text);
-            final GroupModel _group = GroupModel(
+            final GroupModel group = GroupModel(
                 imagePath: groupImage!.path,
                 level: me.level!,
                 departement: me.department!,
                 group_name: _groupNameController.text,
                 admins: [me.uid!],
-                member_ids: MembersIds.toList(),
+                member_ids: _membersIds.toList(),
                 permissions: true);
             log('start creating group');
-            await _chatServices.create_group(group: _group);
+            await _chatServices.create_group(group: group);
             log('finised creating group');
             Navigator.pop(context);
           }
@@ -125,15 +121,15 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     : Colors.black),
           ),
           Checkbox(
-              value: MembersIds.contains(friend.uid),
+              value: _membersIds.contains(friend.uid),
               onChanged: (bool? isSelected) {
                 setState(() {
                   if (isSelected == true) {
-                    MembersIds.add(friend.uid!);
+                    _membersIds.add(friend.uid!);
                   } else {
-                    MembersIds.remove(friend.uid!);
+                    _membersIds.remove(friend.uid!);
                   }
-                  log(MembersIds.toString());
+                  log(_membersIds.toString());
                 });
               })
         ],
