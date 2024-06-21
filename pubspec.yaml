@@ -48,6 +48,7 @@ dependencies:
   path_provider: ^2.1.2
   permission_handler: ^11.2.1
   curved_navigation_bar: ^1.0.6
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,11 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png"
 
 # The following section is specific to Flutter packages.
 flutter:
