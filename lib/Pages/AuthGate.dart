@@ -9,11 +9,12 @@ import 'package:graduate/screens/login_screen.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
+  static const id = 'Auth Gate';
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginStateCubit, SignUpState?>(
-      builder: (context, user){
+      builder: (context, user) {
         if (user is NotLoginYet) {
           BlocProvider.of<NavigationCubit>(context).navigationToLogin();
         } else {

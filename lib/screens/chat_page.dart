@@ -6,6 +6,7 @@ import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/user_model.dart';
 import 'package:graduate/screens/bot_chat_screen.dart';
+import 'package:graduate/screens/group_chat_screen.dart';
 import 'package:graduate/screens/private_chat_screen.dart';
 import 'package:graduate/services/chat_services.dart';
 import 'package:graduate/services/chooseIcons_services.dart';
@@ -57,7 +58,7 @@ class ChatPage extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            const ChatList(type: 'group'),
+            ChatList(type: 'group'),
             ChatList(type: 'dm'),
           ],
         ),
@@ -212,7 +213,16 @@ class ChatCard extends StatelessWidget {
             group.group_name,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroupChatScreen(
+                  group: group,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

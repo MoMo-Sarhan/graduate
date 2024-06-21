@@ -7,6 +7,7 @@ import 'package:graduate/Pages/RegisterPage.dart';
 import 'package:graduate/Pages/Search_post_page.dart';
 import 'package:graduate/Pages/addGroupPage.dart';
 import 'package:graduate/Pages/chat_page.dart';
+import 'package:graduate/Pages/splash_page.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_state.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
@@ -54,9 +55,11 @@ class MyApp extends StatelessWidget {
                 SearchPostPage.ID: (context) => const SearchPostPage(),
                 AddGroupPage.id: (context) => const AddGroupPage(),
                 BotsScreen.id: (context) => BotsScreen(),
+                AuthGate.id: (context) => const AuthGate(),
+                SplashScreen.id: (context) => const SplashScreen(),
               },
               debugShowCheckedModeBanner: false,
-              home: const AuthGate(),
+              home: const SplashScreen(),
             );
           },
         );

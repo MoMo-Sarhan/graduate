@@ -43,11 +43,18 @@ class _MainPageState extends State<MainPage> {
           newButtonBar.addAll(<Widget>[
             Image.asset('assets/home.png', width: width, height: 30),
             Image.asset('assets/communication.png', width: width, height: 40),
-            Image.asset(
-              'assets/community.png',
-              width: 30,
-              height: 30,
-            ),
+            ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                      colors: [Colors.blue, Colors.purpleAccent],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ).createShader(bounds),
+                child: Image.asset(
+                  'assets/community.png',
+                  width: 30,
+                  height: 30,
+                  color: Colors.white,
+                )),
             Image.asset('assets/chatbot.png', width: width, height: 30),
             // Image.asset('assets/online-course.png', width: 30, height: 30),
             Image.asset('assets/setting.png', width: width, height: 30),
@@ -63,11 +70,18 @@ class _MainPageState extends State<MainPage> {
           newButtonBar.addAll(<Widget>[
             Image.asset('assets/home.png', width: 30, height: 30),
             Image.asset('assets/communication.png', width: 30, height: 30),
-            Image.asset(
-              'assets/community.png',
-              width: 30,
-              height: 30,
-            ),
+            ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                      colors: [Colors.blue, Colors.purpleAccent],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ).createShader(bounds),
+                child: Image.asset(
+                  'assets/community.png',
+                  width: 30,
+                  height: 30,
+                  color: Colors.white,
+                )),
             Image.asset('assets/chatbot.png', width: 30, height: 30),
             Image.asset('assets/online-course.png', width: 30, height: 30),
             Image.asset('assets/setting.png', width: 30, height: 30),
@@ -93,8 +107,6 @@ class _MainPageState extends State<MainPage> {
                 setState(() {
                   _selectedPage = value;
                 });
-                log(_selectedPage.toString());
-                log(pages.length.toString());
               },
             ),
             bottomNavigationBar: CurvedNavigationBar(
@@ -112,8 +124,7 @@ class _MainPageState extends State<MainPage> {
                 });
                 _pageController.jumpToPage(_selectedPage);
               },
-            )
-            );
+            ));
       },
     );
   }

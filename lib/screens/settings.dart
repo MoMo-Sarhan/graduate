@@ -15,21 +15,10 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  bool _isDarkMode = false;
   bool _getNotifications = true;
 
   void _toggleTheme(bool value) {
-    setState(() {
-      _isDarkMode = value;
-    });
-
-    if (_isDarkMode) {
-      // Enable dark mode
-      _setDarkMode(context);
-    } else {
-      // Enable light mode
-      _setLightMode(context);
-    }
+    setState(() {});
   }
 
   void _toggleNotifications(bool value) {
@@ -39,25 +28,7 @@ class _SettingScreenState extends State<SettingScreen> {
     // Handle notifications setting change here
   }
 
-  void _setDarkMode(BuildContext context) {
-    ThemeData darkTheme = ThemeData.dark().copyWith(
-      primaryColor: Colors.blue,
-      colorScheme:
-          ColorScheme.fromSwatch().copyWith(secondary: Colors.purpleAccent),
-    );
-
-    // Update the theme
-  }
-
-  void _setLightMode(BuildContext context) {
-    ThemeData lightTheme = ThemeData.light().copyWith(
-      primaryColor: Colors.blue,
-      colorScheme:
-          ColorScheme.fromSwatch().copyWith(secondary: Colors.purpleAccent),
-    );
-
-    // Update the theme
-  }
+  // Update the theme
 
   @override
   Widget build(BuildContext context) {

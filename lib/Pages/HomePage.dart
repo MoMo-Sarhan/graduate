@@ -52,10 +52,12 @@ class _HomePageState extends State<HomePage> {
           )),
       body: Column(children: [
         AnimationHomePage(
+          user: BlocProvider.of<LoginStateCubit>(context).userModel,
           second: 5,
           direction: Axis.horizontal,
         ),
         AnimationHomePage(
+          user: BlocProvider.of<LoginStateCubit>(context).userModel,
           second: 7,
           direction: Axis.vertical,
         ),

@@ -85,6 +85,7 @@ class CommunityServices {
     return userData.getFullName();
   }
 
+
   Stream<QuerySnapshot> searchPost(
       {UserModel? user, required String keyWord}) {
     if (user != null) {

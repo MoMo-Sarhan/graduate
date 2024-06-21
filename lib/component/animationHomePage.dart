@@ -1,12 +1,13 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:graduate/services/chooseIcons_services.dart';
+import 'package:graduate/models/user_model.dart';
 
 class AnimationHomePage extends StatefulWidget {
-  AnimationHomePage({required this.direction, required this.second});
+  AnimationHomePage(
+      {required this.direction, required this.second, required this.user});
   final int second;
   final Axis direction;
+  final UserModel? user;
   @override
   _AnimationHomePageState createState() => _AnimationHomePageState();
 }
@@ -53,14 +54,15 @@ class _AnimationHomePageState extends State<AnimationHomePage> {
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: SizedBox(
         height: MediaQuery.of(context).size.height / 4,
-        child: PageView(
+        child: 
+        PageView(
           scrollDirection: widget.direction,
           controller: _pageController,
           onPageChanged: (index) {
             setState(() {
               _currentPage = index;
             });
-          },
+            },
           children: [
             // Your page 1 widget
             Container(
