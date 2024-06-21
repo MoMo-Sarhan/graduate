@@ -56,7 +56,7 @@ class _RatingPageState extends State<RatingPage> {
           Container(
             padding: EdgeInsets.all(20),
             child: Text(
-              '${rate}',
+              '$rate',
               style: TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class _RatingPageState extends State<RatingPage> {
             );
           }
           return Center(
-            child: Text(_getRateData(snapshot.data!.docs).toString()),
+            child: Text(_getRateData(snapshot.data!.docs).toStringAsFixed(1)),
           );
         });
   }
@@ -110,7 +110,7 @@ class _RatingPageState extends State<RatingPage> {
   double _getRateData(List<DocumentSnapshot> docs) {
     log(docs.length.toString());
     double allRate = 0;
-    int counter =  docs.length;
+    int counter = docs.length;
     for (var doc in docs) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       allRate += data['rate'];
