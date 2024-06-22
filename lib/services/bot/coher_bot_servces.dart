@@ -6,9 +6,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class CohereClient {
+  CohereClient();
   var history = FirebaseFirestore.instance.collection('/history');
   final User _currentUser = FirebaseAuth.instance.currentUser!;
-  CohereClient();
   final String _apiKey = 'TcZjPcNuntkBpDbSsH5M5X8N9vlSs6Mq11KoL3rd';
   final String _apiUrl = 'https://api.cohere.ai/v1';
 
@@ -54,12 +54,12 @@ class CohereClient {
     }
   }
 
-  Future<void> saveMessage(
-    String chat, {
-    required String message,
-    required String response,
-    required bool newChat,
-  }) async {
+    Future<void> saveMessage(
+      String chat, {
+      required String message,
+      required String response,
+      required bool newChat,
+    }) async {
     try {
       int length = 5;
       if (length > message.length) length = message.length;

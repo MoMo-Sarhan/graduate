@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/Pages/HomePage.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
-import 'package:graduate/screens/bots_screen.dart';
+import 'package:graduate/screens/Bots_pages/bots_screen.dart';
 import 'package:graduate/screens/chat_page.dart';
 import 'package:graduate/screens/courses_screen.dart';
 import 'package:graduate/screens/posts_page.dart';

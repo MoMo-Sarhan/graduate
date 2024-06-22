@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:graduate/services/bot/botservices.dart';
+import 'package:graduate/services/bot/yuni_bot_services.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({
+class YuniScreen extends StatefulWidget {
+  const YuniScreen({
     super.key,
     required this.icon,
     required this.name,
@@ -16,10 +15,10 @@ class ChatScreen extends StatefulWidget {
   final String description;
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _YuniScreenState createState() => _YuniScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _YuniScreenState extends State<YuniScreen> {
   final List<Map<String, String>> messages = [
     {
       'sender': 'bot',
@@ -29,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // Add more initial messages here if needed
   ];
 
-  final _cohereClient = CohereClient();
+  final _yuniClient = YuniClient();
   List<String> _chatHistory = [];
   final TextEditingController _messageControl = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -56,7 +55,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage() async {
-    final message = _messageControl.text;
+    if (_messageControl.text.isEmpty) return;
+    final message = _messageControl.text.trim();
     _messageControl.clear();
 
     setState(() {
@@ -64,15 +64,15 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     try {
-      final response = await _cohereClient.chat(message, _chatHistory);
-      final botResponse = jsonDecode(response)['text'];
+      final response = await _yuniClient.predict(message);
+      _simulateBotResponse(response);
 
-      setState(() {
-        _response = botResponse;
-        _chatHistory.insert(0, 'Bot: $_response');
-        // _chatHistory.add('You: $message');
-        // _chatHistory.add('Bot: $_response');
-      });
+      // setState(() {
+      //   _response = response;
+      //   _chatHistory.insert(0, 'Bot: $_response');
+      //   // _chatHistory.add('You: $message');
+      //   // _chatHistory.add('Bot: $_response');
+      // });
 
       _listController.animateTo(
         0,
@@ -80,55 +80,43 @@ class _ChatScreenState extends State<ChatScreen> {
         curve: Curves.bounceInOut,
       );
       _chat = _chatHistory.length == 2 ? message.substring(0, 5) : _chat;
-      await _cohereClient.saveMessage(_chat,
+      await _yuniClient.saveMessage(_chat,
           message: message,
-          response: jsonDecode(response)['text'],
+          response: response,
           newChat: _chatHistory.length == 2);
-      var x = await _cohereClient.getChats();
-      log(x.toString());
+      // var x = await _cohereClient.getChats();
+      // log(x.toString());
     } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.pop(context);
+            });
+            return AlertDialog(
+              content: Text(e.toString().split(':').last),
+            );
+          });
       log('Error: $e');
       log('$_chatHistory');
 
       setState(() {
         _response = 'Oops! Something went wrong. Please try again.$e';
-        _chatHistory.add('Bot: $_response');
+        _chatHistory.insert(0, 'Bot: $_response');
       });
     }
   }
 
-  // void _sendMessage() {
-  //   final text = _controller.text.trim();
-  //   if (text.isNotEmpty) {
-  //     setState(() {
-  //       messages.add({'sender': 'user', 'text': text, 'displayedText': text});
-  //       _controller.clear();
-  //       _simulateBotResponse('You said: $text');
-  //       _scrollToBottom();
-  //     });
-  //   }
-  // }
   void _simulateBotResponse(String responseText) {
-    final response = {
-      'sender': 'bot',
-      'text': responseText,
-      'displayedText': ''
-    };
-    setState(() {
-      messages.add(response);
-    });
-    int currentIndex = messages.length - 1;
-
+    _chatHistory.insert(0, 'Bot: ');
     int charIndex = 0;
     _timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
       if (charIndex < responseText.length) {
         setState(() {
-          messages[currentIndex]['displayedText'] = messages[currentIndex]
-                  ['displayedText']! +
-              responseText[charIndex];
+          _chatHistory.first += responseText[charIndex];
         });
         charIndex++;
-        _scrollToBottom();
+        // _scrollToBottom();
       } else {
         timer.cancel();
       }
@@ -158,7 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   _chatHistory.clear();
                 });
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.add,
                 size: 30,
               ))
@@ -170,13 +158,16 @@ class _ChatScreenState extends State<ChatScreen> {
                 tag: widget.icon,
                 child: Image.asset(widget.icon, width: 20, height: 20)),
             const SizedBox(width: 12),
-            Text(widget.name),
+            Text(
+              widget.name,
+              style: TextStyle(overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
       ),
       drawer: Drawer(
         child: FutureBuilder(
-          future: _cohereClient.getChats(),
+          future: _yuniClient.getChats(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -188,40 +179,27 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Text('error'),
               );
             }
-            return Column(
-              children: [
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _chatHistory.clear();
-                      });
-                    },
-                    child: const Text('New Chat')),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text('${snapshot.data![index]}'),
-                        onTap: () async {
-                          _chat = snapshot.data![index];
-                          final history =
-                              await _cohereClient.getChat(chat: _chat);
-                          _chatHistory.clear();
-                          history.forEach((e) {
-                            String message = e['message'];
-                            String response = e['response'];
-                            _chatHistory.add('Bot: $response');
-                            _chatHistory.add('You: $message');
-                          });
-                          log(history.toString());
-                          setState(() {});
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ChatCard(
+                  icon: widget.icon,
+                  chat: snapshot.data![index],
+                  ontap: () async {
+                    _chat = snapshot.data![index];
+                    final history = await _yuniClient.getChat(chat: _chat);
+                    _chatHistory.clear();
+                    history.forEach((e) {
+                      String message = e['message'];
+                      String response = e['response'];
+                      _chatHistory.add('Bot: $response');
+                      _chatHistory.add('You: $message');
+                    });
+                    log(history.toString());
+                    setState(() {});
+                  },
+                );
+              },
             );
           },
         ),
@@ -270,58 +248,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 );
-
-                // var message = _chatHistory[index];
-                // final isUserMessage = message.startsWith('You: ');
-                // final isBot = message.startsWith('Bot: ');
-                // message = message.substring(5);
-
-                // return MessageContainer(
-                //     message: message,
-                //     userName: '',
-                //     alignment: isUserMessage,
-                //     time: Timestamp.now());
               },
             ),
-            // ListView.builder(
-            //   controller: _scrollController,
-            //   itemCount: messages.length,
-            //   itemBuilder: (context, index) {
-            //     final message = messages[index];
-            //     final isBot = message['sender'] == 'bot';
-            //     return Container(
-            //       alignment:
-            //           isBot ? Alignment.centerLeft : Alignment.centerRight,
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Row(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           if (isBot)
-            //             Padding(
-            //               padding: const EdgeInsets.only(right: 8.0),
-            //               child: Image.asset(widget.icon,
-            //                   width: 20, height: 20), // Bot icon
-            //             ),
-            //           Flexible(
-            //             child: Container(
-            //               decoration: BoxDecoration(
-            //                 color:
-            //                     isBot ? Colors.purple[50] : Colors.purple[100],
-            //                 borderRadius: BorderRadius.circular(12),
-            //               ),
-            //               padding: const EdgeInsets.symmetric(
-            //                   vertical: 10, horizontal: 16),
-            //               child: Text(
-            //                 message['displayedText']!,
-            //                 style: const TextStyle(color: Colors.black),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     );
-            //   },
-            // ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -347,6 +275,33 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ChatCard extends StatelessWidget {
+  const ChatCard(
+      {super.key, required this.icon, required this.ontap, required this.chat});
+  final String icon;
+  final String chat;
+  final Function()? ontap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: AssetImage(icon),
+        ),
+        trailing: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.delete),
+        ),
+        title: Text(chat),
+        onTap: ontap,
       ),
     );
   }

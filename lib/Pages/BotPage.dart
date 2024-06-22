@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduate/component/CustomInputFiled.dart';
 import 'package:graduate/component/MessageContainer.dart';
 import 'package:graduate/cubits/DarkMode_cubits/dark_mode_cubits.dart';
-import 'package:graduate/services/bot/botservices.dart';
+import 'package:graduate/services/bot/coher_bot_servces.dart';
 
 class BotPage extends StatefulWidget {
   const BotPage({super.key});

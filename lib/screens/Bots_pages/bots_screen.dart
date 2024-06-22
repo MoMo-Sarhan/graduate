@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:graduate/screens/bot_chat_screen.dart';
+import 'package:graduate/screens/Bots_pages/bot_chat_screen.dart';
+import 'package:graduate/screens/Bots_pages/yuni_chat_screen.dart';
+
+// ignore: camel_case_types
+enum Bots { coher, yuni }
 
 class BotsScreen extends StatelessWidget {
   static const id = 'chat bot screen';
@@ -16,28 +20,33 @@ class BotsScreen extends StatelessWidget {
     Bot(
         name: 'General chatbot',
         description: 'Real-time chat with a bot',
-        icon: 'assets/bot/chatbot.png'),
+        icon: 'assets/bot/chatbot.png',
+        id: Bots.coher),
     Bot(
         name: 'Curriculum chatbot',
         description: 'Translate text to different languages',
-        icon: 'assets/bot/bot (1).png'),
+        icon: 'assets/bot/bot (1).png',
+        id: Bots.yuni),
     Bot(
-      name: 'Summarization chatbot',
-      description: 'Summarize text to the main points',
-      icon: 'assets/bot/web.png',
-    ),
+        name: 'Summarization chatbot',
+        description: 'Summarize text to the main points',
+        icon: 'assets/bot/web.png',
+        id: Bots.yuni),
     Bot(
         name: 'Improve writing chatbot',
         description: 'Check grammar and spelling mistakes',
-        icon: 'assets/bot/ai-writing.png'),
+        icon: 'assets/bot/ai-writing.png',
+        id: Bots.yuni),
     Bot(
         name: 'Create quizzes chatbot',
         description: 'Create quizzes for your students',
-        icon: 'assets/bot/robot.png'),
+        icon: 'assets/bot/robot.png',
+        id: Bots.yuni),
     Bot(
         name: 'Evaluate quizzes chatbot',
         description: 'Evaluate quizzes for your students',
-        icon: 'assets/bot/robot (1).png'),
+        icon: 'assets/bot/robot (1).png',
+        id: Bots.yuni),
   ];
 
   final List<Map<String, String>> history = [
@@ -92,19 +101,25 @@ class BotsScreen extends StatelessWidget {
                     width: 200,
                     child: GestureDetector(
                       onTap: () {
-                        // Use PageRouteBuilder for custom transition duration
                         Navigator.push(
                           context,
                           PageRouteBuilder(
                             transitionDuration: const Duration(
                                 milliseconds: 500), // Set the duration you want
                             pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    ChatScreen(
-                              name: tool.name,
-                              description: tool.description,
-                              icon: tool.icon,
-                            ),
+                                (context, animation, secondaryAnimation) {
+                              if (tool.id == Bots.coher) {
+                                return CoherScreen(
+                                    icon: tool.icon,
+                                    name: tool.name,
+                                    description: tool.description);
+                              }
+                              return YuniScreen(
+                                name: tool.name,
+                                description: tool.description,
+                                icon: tool.icon,
+                              );
+                            },
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {
                               return FadeTransition(
@@ -202,6 +217,11 @@ class Bot {
   String name;
   String description;
   String icon;
+  Bots id;
 
-  Bot({required this.name, required this.description, required this.icon});
+  Bot(
+      {required this.name,
+      required this.description,
+      required this.icon,
+      required this.id});
 }

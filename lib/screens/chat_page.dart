@@ -5,7 +5,7 @@ import 'package:graduate/Pages/addGroupPage.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/models/group_model.dart';
 import 'package:graduate/models/user_model.dart';
-import 'package:graduate/screens/bot_chat_screen.dart';
+import 'package:graduate/screens/Bots_pages/bot_chat_screen.dart';
 import 'package:graduate/screens/group_chat_screen.dart';
 import 'package:graduate/screens/private_chat_screen.dart';
 import 'package:graduate/services/chat_services.dart';

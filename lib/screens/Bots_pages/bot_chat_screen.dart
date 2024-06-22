@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:graduate/services/bot/botservices.dart';
+import 'package:graduate/services/bot/coher_bot_servces.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({
+class CoherScreen extends StatefulWidget {
+  const CoherScreen({
     super.key,
     required this.icon,
     required this.name,
@@ -16,10 +16,10 @@ class ChatScreen extends StatefulWidget {
   final String description;
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _CoherScreenState createState() => _CoherScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _CoherScreenState extends State<CoherScreen> {
   final List<Map<String, String>> messages = [
     {
       'sender': 'bot',
@@ -92,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       setState(() {
         _response = 'Oops! Something went wrong. Please try again.$e';
-        _chatHistory.add('Bot: $_response');
+        _chatHistory.insert(0, 'Bot: $_response');
       });
     }
   }
@@ -170,7 +170,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 tag: widget.icon,
                 child: Image.asset(widget.icon, width: 20, height: 20)),
             const SizedBox(width: 12),
-            Text(widget.name),
+            Text(
+              widget.name,
+              style: TextStyle(overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
       ),

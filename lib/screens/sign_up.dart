@@ -158,8 +158,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               const SizedBox(height: 20),
                               DropdownButtonFormField<String>(
-                                isExpanded:
-                                    _selectedRole == 'Student' ? true : false,
+                                isExpanded: false,
+                                // _selectedRole == 'Student' ? true : false,
                                 validator: (value) {
                                   if (value == null) {
                                     return 'Gender can not be null';
