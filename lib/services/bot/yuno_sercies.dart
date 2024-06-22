@@ -10,6 +10,7 @@ class YunoApiClient extends GreateBot {
   var history = FirebaseFirestore.instance.collection('/history');
   final User _currentUser = FirebaseAuth.instance.currentUser!;
 
+  @override
   Future<String> predict(String userQuestion) async {
     final response = await http.post(
       Uri.parse('$baseUrl/call/predict'),
@@ -29,26 +30,27 @@ class YunoApiClient extends GreateBot {
     }
   }
 
+  @override
   Future<String> getPredictionResult(String eventId) async {
-    final response = await http.get(Uri.parse('$baseUrl/call/predict/$eventId'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/call/predict/$eventId'));
 
     if (response.statusCode == 200) {
-
-        String rawResponse = response.body;
-        String dataLine = rawResponse
-            .split('\n')
-            .firstWhere((line) => line.startsWith('data:'));
-        String rawData = dataLine
-            .substring(6)
-            .trim(); // Remove "data: " prefix and trim whitespace
-        List<dynamic> dataField = jsonDecode(rawData);
-        return dataField[0];
+      String rawResponse = response.body;
+      String dataLine = rawResponse
+          .split('\n')
+          .firstWhere((line) => line.startsWith('data:'));
+      String rawData = dataLine
+          .substring(6)
+          .trim(); // Remove "data: " prefix and trim whitespace
+      List<dynamic> dataField = jsonDecode(rawData);
+      return dataField[0];
     } else {
       throw Exception('Failed to load prediction result');
     }
   }
 
-@override
+  @override
   Future<void> saveMessage(
     String chat, {
     required String message,
@@ -89,6 +91,44 @@ class YunoApiClient extends GreateBot {
       });
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  @override
+  Future<List<dynamic>> getChats() async {
+    try {
+      DocumentReference docRef =
+          history.doc('yuno').collection(_currentUser.uid!).doc('chat');
+      var docment = await docRef.get();
+      if (docment.exists) {
+        Map<String, dynamic> data = docment.data() as Map<String, dynamic>;
+        if (data.containsKey('collections')) {
+          List<dynamic> collections = data['collections'] as List<dynamic>;
+          return collections;
+        }
+      }
+      return ['no collection found'];
+    } catch (e) {
+      log(e.toString());
+      return ['error'];
+    }
+  }
+
+  @override
+  Future<List<dynamic>> getChat({required String chat}) async {
+    try {
+      CollectionReference collectionRef = history
+          .doc('yuno')
+          .collection(_currentUser.uid!)
+          .doc('chat')
+          .collection(chat);
+      QuerySnapshot snapshot =
+          await collectionRef.orderBy('time', descending: true).get();
+      List<dynamic> messages = snapshot.docs.map((e) => e.data()).toList();
+      return messages;
+    } catch (e) {
+      log(e.toString());
+      return ['error'];
     }
   }
 }

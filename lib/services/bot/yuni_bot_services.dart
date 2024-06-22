@@ -5,11 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:graduate/services/bot/greate_bot_model.dart';
 import 'package:http/http.dart' as http;
 
-class YuniClient extends GreateBot{
+class YuniClient extends GreateBot {
   var history = FirebaseFirestore.instance.collection('/history');
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final String baseUrl = "https://pikachu65-yuni.hf.space";
-@override
+  @override
   Future<String> predict(String userInput) async {
     try {
       final response = await http.post(
@@ -38,7 +38,7 @@ class YuniClient extends GreateBot{
     }
   }
 
-@override
+  @override
   Future<String> getPredictionResult(String eventId) async {
     log('event id is =$eventId');
     try {
@@ -64,7 +64,7 @@ class YuniClient extends GreateBot{
     }
   }
 
-@override
+  @override
   Future<void> saveMessage(
     String chat, {
     required String message,
@@ -72,7 +72,6 @@ class YuniClient extends GreateBot{
     required bool newChat,
   }) async {
     try {
-      if (message.isEmpty) return;
       int length = 7;
       if (length > message.length) length = message.length;
       String chatName = message.substring(0, length);
@@ -104,11 +103,11 @@ class YuniClient extends GreateBot{
         'time': Timestamp.now(),
       });
     } catch (e) {
-      log(e.toString());
+      log('in saved message' + e.toString());
     }
   }
 
-@override
+  @override
   Future<List<dynamic>> getChats() async {
     try {
       DocumentReference docRef =
@@ -128,7 +127,7 @@ class YuniClient extends GreateBot{
     }
   }
 
-@override
+  @override
   Future<List<dynamic>> getChat({required String chat}) async {
     try {
       CollectionReference collectionRef = history

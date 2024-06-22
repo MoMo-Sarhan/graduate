@@ -83,6 +83,7 @@ class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
         curve: Curves.bounceInOut,
       );
       _chat = _chatHistory.length == 2 ? message.substring(0, 5) : _chat;
+      log("here we are" + _chat);
       await widget.botClient.saveMessage(_chat,
           message: message,
           response: response,

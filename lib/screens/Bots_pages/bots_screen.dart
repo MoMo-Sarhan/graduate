@@ -110,7 +110,14 @@ class BotsScreen extends StatelessWidget {
                                 milliseconds: 500), // Set the duration you want
                             pageBuilder:
                                 (context, animation, secondaryAnimation) {
-                              if (tool.id == Bots.yuno) {
+                              if (tool.id == Bots.yuni) {
+                                return GreateBotScreenChat(
+                                  name: tool.name,
+                                  description: tool.description,
+                                  icon: tool.icon,
+                                  botClient: YuniClient(),
+                                );
+                              } else if (tool.id == Bots.yuno) {
                                 return GreateBotScreenChat(
                                   name: tool.name,
                                   description: tool.description,
