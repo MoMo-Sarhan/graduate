@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:graduate/screens/Bots_pages/bot_chat_screen.dart';
-import 'package:graduate/screens/Bots_pages/yuni_chat_screen.dart';
+import 'package:graduate/screens/Bots_pages/greate_bot_chat_screen.dart';
 import 'package:graduate/services/bot/yuni_bot_services.dart';
+import 'package:graduate/services/bot/yuno_sercies.dart';
 
 // ignore: camel_case_types
-enum Bots { coher, yuni }
+enum Bots { coher, yuni, yuno }
 
 class BotsScreen extends StatelessWidget {
   static const id = 'chat bot screen';
@@ -32,7 +33,7 @@ class BotsScreen extends StatelessWidget {
         name: 'Summarization chatbot',
         description: 'Summarize text to the main points',
         icon: 'assets/bot/web.png',
-        id: Bots.yuni),
+        id: Bots.yuno),
     Bot(
         name: 'Improve writing chatbot',
         description: 'Check grammar and spelling mistakes',
@@ -109,18 +110,19 @@ class BotsScreen extends StatelessWidget {
                                 milliseconds: 500), // Set the duration you want
                             pageBuilder:
                                 (context, animation, secondaryAnimation) {
-                              if (tool.id == Bots.coher) {
-                                return CoherScreen(
-                                    icon: tool.icon,
-                                    name: tool.name,
-                                    description: tool.description);
+                              if (tool.id == Bots.yuno) {
+                                return GreateBotScreenChat(
+                                  name: tool.name,
+                                  description: tool.description,
+                                  icon: tool.icon,
+                                  botClient: YunoApiClient(),
+                                );
                               }
-                              return YuniScreen(
-                                name: tool.name,
-                                description: tool.description,
-                                icon: tool.icon,
-                                botClient: YuniClient(),
-                              );
+
+                              return CoherScreen(
+                                  icon: tool.icon,
+                                  name: tool.name,
+                                  description: tool.description);
                             },
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {

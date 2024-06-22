@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:graduate/services/bot/greate_bot_model.dart';
-import 'package:graduate/services/bot/yuni_bot_services.dart';
 
-class YuniScreen extends StatefulWidget {
-  const YuniScreen({
+class GreateBotScreenChat extends StatefulWidget {
+  const GreateBotScreenChat({
     super.key,
     required this.icon,
     required this.name,
@@ -18,10 +17,11 @@ class YuniScreen extends StatefulWidget {
   final GreateBot botClient;
 
   @override
-  _YuniScreenState createState() => _YuniScreenState();
+  _GreateBotScreenChatState createState() => _GreateBotScreenChatState();
 }
 
-class _YuniScreenState extends State<YuniScreen> {
+class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
+  bool _canSend = true;
   final List<Map<String, String>> messages = [
     {
       'sender': 'bot',
@@ -57,8 +57,9 @@ class _YuniScreenState extends State<YuniScreen> {
   }
 
   Future<void> _sendMessage() async {
+    if (!_canSend) return;
     if (_messageControl.text.isEmpty) return;
-    final message = _messageControl.text.trim();
+    final message = _messageControl.text;
     _messageControl.clear();
 
     setState(() {
@@ -116,11 +117,15 @@ class _YuniScreenState extends State<YuniScreen> {
       if (charIndex < responseText.length) {
         setState(() {
           _chatHistory.first += responseText[charIndex];
+          _canSend = false;
         });
         charIndex++;
         // _scrollToBottom();
       } else {
         timer.cancel();
+        setState(() {
+          _canSend = true;
+        });
       }
     });
   }
@@ -144,6 +149,7 @@ class _YuniScreenState extends State<YuniScreen> {
         actions: [
           IconButton(
               onPressed: () {
+                if (!_canSend) return;
                 setState(() {
                   _chatHistory.clear();
                 });
@@ -169,7 +175,7 @@ class _YuniScreenState extends State<YuniScreen> {
       ),
       drawer: Drawer(
         child: FutureBuilder(
-          future:widget.botClient.getChats(),
+          future: widget.botClient.getChats(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -269,10 +275,17 @@ class _YuniScreenState extends State<YuniScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.send, color: Colors.purple),
-                  onPressed: _sendMessage,
-                ),
+                _canSend
+                    ? IconButton(
+                        icon: const Icon(Icons.send, color: Colors.purple),
+                        onPressed: _sendMessage,
+                      )
+                    : IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.stop,
+                          color: Colors.purple,
+                        ))
               ],
             ),
           ),
