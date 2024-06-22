@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:graduate/services/bot/greate_bot_model.dart';
 import 'package:graduate/services/bot/yuni_bot_services.dart';
 
 class YuniScreen extends StatefulWidget {
@@ -9,10 +10,12 @@ class YuniScreen extends StatefulWidget {
     required this.icon,
     required this.name,
     required this.description,
+    required this.botClient,
   });
   final String icon;
   final String name;
   final String description;
+  final GreateBot botClient;
 
   @override
   _YuniScreenState createState() => _YuniScreenState();
@@ -28,7 +31,6 @@ class _YuniScreenState extends State<YuniScreen> {
     // Add more initial messages here if needed
   ];
 
-  final _yuniClient = YuniClient();
   List<String> _chatHistory = [];
   final TextEditingController _messageControl = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -64,7 +66,7 @@ class _YuniScreenState extends State<YuniScreen> {
     });
 
     try {
-      final response = await _yuniClient.predict(message);
+      final response = await widget.botClient.predict(message);
       _simulateBotResponse(response);
 
       // setState(() {
@@ -80,7 +82,7 @@ class _YuniScreenState extends State<YuniScreen> {
         curve: Curves.bounceInOut,
       );
       _chat = _chatHistory.length == 2 ? message.substring(0, 5) : _chat;
-      await _yuniClient.saveMessage(_chat,
+      await widget.botClient.saveMessage(_chat,
           message: message,
           response: response,
           newChat: _chatHistory.length == 2);
@@ -167,7 +169,7 @@ class _YuniScreenState extends State<YuniScreen> {
       ),
       drawer: Drawer(
         child: FutureBuilder(
-          future: _yuniClient.getChats(),
+          future:widget.botClient.getChats(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -187,7 +189,7 @@ class _YuniScreenState extends State<YuniScreen> {
                   chat: snapshot.data![index],
                   ontap: () async {
                     _chat = snapshot.data![index];
-                    final history = await _yuniClient.getChat(chat: _chat);
+                    final history = await widget.botClient.getChat(chat: _chat);
                     _chatHistory.clear();
                     history.forEach((e) {
                       String message = e['message'];

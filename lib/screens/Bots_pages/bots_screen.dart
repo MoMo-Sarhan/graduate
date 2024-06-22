@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graduate/screens/Bots_pages/bot_chat_screen.dart';
 import 'package:graduate/screens/Bots_pages/yuni_chat_screen.dart';
+import 'package:graduate/services/bot/yuni_bot_services.dart';
 
 // ignore: camel_case_types
 enum Bots { coher, yuni }
@@ -118,6 +119,7 @@ class BotsScreen extends StatelessWidget {
                                 name: tool.name,
                                 description: tool.description,
                                 icon: tool.icon,
+                                botClient: YuniClient(),
                               );
                             },
                             transitionsBuilder: (context, animation,
