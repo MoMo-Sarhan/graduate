@@ -77,7 +77,7 @@ class _CoursesScreenState extends State<CoursesScreen>
               link: link,
             );
           }
-          return FloatingActionButton(onPressed: () {});
+          return const SizedBox.shrink();
         }));
   }
 
