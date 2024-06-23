@@ -8,7 +8,6 @@ import 'package:graduate/component/customFloationbutton.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits.dart';
 import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/helper/reusableFunc.dart';
-import 'package:graduate/screens/course_detail_page.dart';
 import 'package:graduate/services/course_services.dart';
 
 class CoursesScreen extends StatefulWidget {
@@ -58,7 +57,7 @@ class _CoursesScreenState extends State<CoursesScreen>
             ).createShader(bounds),
             child: Text(
               link.isEmpty ? 'Your Courses' : link.split('/').last,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           centerTitle: true,
@@ -147,12 +146,11 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String name = 'Flutter Development';
-    String imageUrl = 'https://via.placeholder.com/150';
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: GestureDetector(
+        onLongPress: () async {},
         onTap: onTap,
         child: isImage(text: ref.fullPath)
             ? _loadImage()
@@ -161,6 +159,9 @@ class CourseCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: _actionToDelete(context)),
                     Expanded(
                       child: isFile(text: ref.fullPath)
                           ? ShaderMask(
@@ -223,16 +224,45 @@ class CourseCard extends StatelessWidget {
             child: Text('Error'),
           );
         }
-        return Container(
-          padding: const EdgeInsets.all(16),
-          margin: const EdgeInsets.all(16),
-          width: MediaQuery.of(context).size.width / 2.5,
-          height: MediaQuery.of(context).size.height / 4,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                  image: NetworkImage(snapshot.data!), fit: BoxFit.fill)),
+        return Column(
+          children: [
+            _actionToDelete(context),
+            Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.all(16),
+              width: MediaQuery.of(context).size.width / 2.5,
+              height: MediaQuery.of(context).size.height / 6.6,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  image: DecorationImage(
+                      image: NetworkImage(snapshot.data!), fit: BoxFit.fill)),
+            ),
+          ],
         );
+      }),
+    );
+  }
+
+  Widget _actionToDelete(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: PopupMenuButton<String>(onSelected: (value) {
+        if (value == 'Delete') {
+          CourseService().delete(link: ref.fullPath, context: context);
+        }
+      }, itemBuilder: (context) {
+        return const [
+          PopupMenuItem(
+            value: 'Delete',
+            height: 20,
+            child: Text('Delete'),
+          ),
+          PopupMenuItem(
+            value: 'Rename',
+            height: 20,
+            child: Text('Rename'),
+          )
+        ];
       }),
     );
   }
