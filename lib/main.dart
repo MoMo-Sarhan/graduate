@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:graduate/Pages/AddPostPage.dart';
+import 'package:graduate/Pages/HomePage.dart';
 import 'package:graduate/Pages/LoginPage.dart';
+import 'package:graduate/Pages/MainPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
 import 'package:graduate/Pages/Search_post_page.dart';
 import 'package:graduate/Pages/addGroupPage.dart';
@@ -77,6 +79,8 @@ class MyApp extends StatelessWidget {
                 BotsScreen.id: (context) => BotsScreen(),
                 AuthGate.id: (context) => const AuthGate(),
                 SplashScreen.id: (context) => const SplashScreen(),
+                MainPage.id:(context)=>const MainPage(),
+                HomePage.id: (context) => const HomePage(),
               },
               debugShowCheckedModeBanner: false,
               home: const SplashScreen(),

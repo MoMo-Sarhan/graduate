@@ -5,6 +5,7 @@ import '../../widgets/register_form.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
+  static const id = 'Login Screen id';
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +14,8 @@ class LoginScreen extends StatelessWidget {
         children: [
           BackGround(), // Background gradient
           RegisterForm(), // Form
-        
         ],
       ),
     );
   }
 }
-

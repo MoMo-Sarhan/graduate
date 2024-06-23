@@ -239,7 +239,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: TextFormField(
-                                      validator: _selectedRole != 'Student'
+                                      validator: _selectedRole == 'General'
                                           ? null
                                           : (value) {
                                               int x;
@@ -259,7 +259,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                                       controller: _levelController,
                                       decoration: InputDecoration(
-                                        enabled: _selectedRole == 'Student'
+                                        enabled: _selectedRole != 'General'
                                             ? true
                                             : false,
                                         labelText: 'Level',

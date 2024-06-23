@@ -9,11 +9,13 @@ import 'package:graduate/cubits/Login_cubits/login_cubits_state.dart';
 import 'package:graduate/screens/Bots_pages/bots_screen.dart';
 import 'package:graduate/screens/chat_page.dart';
 import 'package:graduate/screens/courses_screen.dart';
+import 'package:graduate/screens/onBoardingScreen.dart';
 import 'package:graduate/screens/posts_page.dart';
 import 'package:graduate/screens/settings.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
+  static const id = 'Main Page id';
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -87,6 +89,7 @@ class _MainPageState extends State<MainPage> {
             Image.asset('assets/setting.png', width: 30, height: 30),
           ]);
           pages.addAll([
+            // const OnBoardingScreen(),
             const HomePage(),
             const ChatPage(),
             PostPage(),

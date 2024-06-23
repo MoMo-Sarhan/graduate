@@ -53,16 +53,15 @@ class _AnimationHomePageState extends State<AnimationHomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 4,
-        child: 
-        PageView(
+        height: MediaQuery.of(context).size.height / 3,
+        child: PageView(
           scrollDirection: widget.direction,
           controller: _pageController,
           onPageChanged: (index) {
             setState(() {
               _currentPage = index;
             });
-            },
+          },
           children: [
             // Your page 1 widget
             Container(

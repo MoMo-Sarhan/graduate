@@ -52,9 +52,9 @@ class _RegisterFormState extends State<RegisterForm> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Logo
-                      Image.network(
-                        'https://via.placeholder.com/150', // Placeholder image for logo
-                        height: 50,
+                      Image.asset(
+                        'assets/logo.png', // Placeholder image for logo
+                        height: 100,
                       ),
                       const SizedBox(height: 20),
                       // Gradient Text "Get Started now"
