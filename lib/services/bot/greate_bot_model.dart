@@ -130,4 +130,36 @@ class GreateBot {
       return ['error'];
     }
   }
+
+  Future<void> deleteChat({required String chat}) async {
+    try {
+      CollectionReference collectionRef = history
+          .doc(botName)
+          .collection(_currentUser.uid!)
+          .doc('chat')
+          .collection(chat);
+      await collectionRef.doc(chat).delete();
+
+      DocumentReference docRef =
+          history.doc(botName).collection(_currentUser.uid!).doc('chat');
+      var docment = await docRef.get();
+      if (docment.exists) {
+        Map<String, dynamic> data = docment.data() as Map<String, dynamic>;
+        if (data.containsKey('collections')) {
+          List<dynamic> collections = data['collections'] as List<dynamic>;
+          if (collections.contains(chat)) {
+            collections.remove(chat);
+            await docRef.update({'collections': collections.toSet()});
+          }
+        }
+      }
+      // QuerySnapshot snapshot =
+      //     await collectionRef.orderBy('time', descending: true).get();
+      // List<dynamic> messages = snapshot.docs.map((e) => e.data()).toList();
+      // return messages;
+    } catch (e) {
+      log(e.toString());
+      // return ['error'];
+    }
+  }
 }

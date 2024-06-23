@@ -175,43 +175,55 @@ class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
         ),
       ),
       drawer: Drawer(
-        child: FutureBuilder(
-          future: widget.botClient.getChats(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (snapshot.data == null) {
-              return const Center(
-                child: Text('error'),
-              );
-            }
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return ChatCard(
-                  icon: widget.icon,
-                  chat: snapshot.data![index],
-                  ontap: () async {
-                    _chat = snapshot.data![index];
-                    log(_chat);
-                    final history = await widget.botClient.getChat(chat: _chat);
-                    _chatHistory.clear();
-                    for (var e in history) {
-                      String message = e['message'];
-                      String response = e['response'];
-                      _chatHistory.add('Bot: $response');
-                      _chatHistory.add('You: $message');
-                    }
-                    log(history.toString());
-                    setState(() {});
-                  },
-                );
-              },
-            );
+        child: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {});
           },
+          child: FutureBuilder(
+            future: widget.botClient.getChats(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.data == null) {
+                return const Center(
+                  child: Text('error'),
+                );
+              }
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return ChatCard(
+                    onPressed: () async {
+                      await widget.botClient
+                          .deleteChat(chat: snapshot.data![index]);
+                      setState(() {});
+                      log('done');
+                    },
+                    icon: widget.icon,
+                    chat: snapshot.data![index],
+                    ontap: () async {
+                      _chat = snapshot.data![index];
+                      log(_chat);
+                      final history =
+                          await widget.botClient.getChat(chat: _chat);
+                      _chatHistory.clear();
+                      for (var e in history) {
+                        String message = e['message'];
+                        String response = e['response'];
+                        _chatHistory.add('Bot: $response');
+                        _chatHistory.add('You: $message');
+                      }
+                      log(history.toString());
+                      setState(() {});
+                    },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
       body: Column(
@@ -299,10 +311,15 @@ class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
 
 class ChatCard extends StatelessWidget {
   const ChatCard(
-      {super.key, required this.icon, required this.ontap, required this.chat});
+      {super.key,
+      required this.icon,
+      required this.ontap,
+      required this.chat,
+      required this.onPressed});
   final String icon;
   final String chat;
   final Function()? ontap;
+  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +331,7 @@ class ChatCard extends StatelessWidget {
           backgroundImage: AssetImage(icon),
         ),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: onPressed,
           icon: const Icon(Icons.delete),
         ),
         title: Text(chat),
