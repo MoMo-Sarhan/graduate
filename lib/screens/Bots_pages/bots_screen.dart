@@ -4,7 +4,7 @@ import 'package:graduate/screens/Bots_pages/greate_bot_chat_screen.dart';
 import 'package:graduate/services/bot/greate_bot_model.dart';
 
 // ignore: camel_case_types
-enum Bots { coher, yuni, yuno, yoda, imporvewriting, evaluatequiz }
+enum Bots { yuni, yuno, yoda, imporvewriting, evaluatequiz, createquiz }
 
 class BotsScreen extends StatelessWidget {
   static const id = 'chat bot screen';
@@ -55,7 +55,7 @@ class BotsScreen extends StatelessWidget {
         id: Bots.evaluatequiz),
     Bot(
       botName: Bots.evaluatequiz.name,
-      url: 'https://pikachu65-yuni.hf.space',
+      url: 'https://pikachu65-createquiz.hf.space',
       name: 'coher General chatbot',
       description: 'Real-time chat with a bot',
       icon: 'assets/bot/chatbot.png',
