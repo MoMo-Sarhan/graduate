@@ -43,8 +43,8 @@ class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
   void initState() {
     super.initState();
     // Add a small delay before starting the typing animation for the description
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _simulateBotResponse(widget.description);
+    Future.delayed(const Duration(milliseconds: 50), () {
+      // _simulateBotResponse(widget.description);
     });
   }
 
@@ -196,14 +196,15 @@ class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
                   chat: snapshot.data![index],
                   ontap: () async {
                     _chat = snapshot.data![index];
+                    log(_chat);
                     final history = await widget.botClient.getChat(chat: _chat);
                     _chatHistory.clear();
-                    history.forEach((e) {
+                    for (var e in history) {
                       String message = e['message'];
                       String response = e['response'];
                       _chatHistory.add('Bot: $response');
                       _chatHistory.add('You: $message');
-                    });
+                    }
                     log(history.toString());
                     setState(() {});
                   },

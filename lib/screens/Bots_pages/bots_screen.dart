@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graduate/screens/Bots_pages/bot_chat_screen.dart';
 import 'package:graduate/screens/Bots_pages/greate_bot_chat_screen.dart';
-import 'package:graduate/services/bot/yuni_bot_services.dart';
-import 'package:graduate/services/bot/yuno_sercies.dart';
+import 'package:graduate/services/bot/greate_bot_model.dart';
 
 // ignore: camel_case_types
-enum Bots { coher, yuni, yuno }
+enum Bots { coher, yuni, yuno, yoda, imporvewriting, evaluatequiz }
 
 class BotsScreen extends StatelessWidget {
   static const id = 'chat bot screen';
@@ -20,35 +19,48 @@ class BotsScreen extends StatelessWidget {
 
   final List<Bot> eliteTools = [
     Bot(
+        botName: Bots.yuni.name,
+        url: 'https://pikachu65-yuni.hf.space',
         name: 'General chatbot',
-        description: 'Real-time chat with a bot',
-        icon: 'assets/bot/chatbot.png',
-        id: Bots.coher),
-    Bot(
-        name: 'Curriculum chatbot',
         description: 'Translate text to different languages',
         icon: 'assets/bot/bot (1).png',
         id: Bots.yuni),
     Bot(
-        name: 'Summarization chatbot',
+        botName: Bots.yuno.name,
+        url: 'https://pikachu65-yuno.hf.space',
+        name: 'Curriculum chatbot',
         description: 'Summarize text to the main points',
         icon: 'assets/bot/web.png',
         id: Bots.yuno),
     Bot(
+        botName: Bots.yoda.name,
+        url: 'https://pikachu65-yoda.hf.space',
         name: 'Improve writing chatbot',
         description: 'Check grammar and spelling mistakes',
         icon: 'assets/bot/ai-writing.png',
-        id: Bots.yuni),
+        id: Bots.yoda),
     Bot(
-        name: 'Create quizzes chatbot',
+        botName: Bots.imporvewriting.name,
+        url: 'https://pikachu65-improvewriting.hf.space',
+        name: 'Create Improve Writing',
         description: 'Create quizzes for your students',
         icon: 'assets/bot/robot.png',
-        id: Bots.yuni),
+        id: Bots.imporvewriting),
     Bot(
+        botName: Bots.evaluatequiz.name,
+        url: 'https://pikachu65-evaluatequiz.hf.space',
         name: 'Evaluate quizzes chatbot',
         description: 'Evaluate quizzes for your students',
         icon: 'assets/bot/robot (1).png',
-        id: Bots.yuni),
+        id: Bots.evaluatequiz),
+    Bot(
+      botName: Bots.evaluatequiz.name,
+      url: 'https://pikachu65-yuni.hf.space',
+      name: 'coher General chatbot',
+      description: 'Real-time chat with a bot',
+      icon: 'assets/bot/chatbot.png',
+      id: Bots.evaluatequiz,
+    ),
   ];
 
   final List<Map<String, String>> history = [
@@ -110,26 +122,13 @@ class BotsScreen extends StatelessWidget {
                                 milliseconds: 500), // Set the duration you want
                             pageBuilder:
                                 (context, animation, secondaryAnimation) {
-                              if (tool.id == Bots.yuni) {
-                                return GreateBotScreenChat(
-                                  name: tool.name,
-                                  description: tool.description,
-                                  icon: tool.icon,
-                                  botClient: YuniClient(),
-                                );
-                              } else if (tool.id == Bots.yuno) {
-                                return GreateBotScreenChat(
-                                  name: tool.name,
-                                  description: tool.description,
-                                  icon: tool.icon,
-                                  botClient: YunoApiClient(),
-                                );
-                              }
-
-                              return CoherScreen(
-                                  icon: tool.icon,
-                                  name: tool.name,
-                                  description: tool.description);
+                              return GreateBotScreenChat(
+                                name: tool.name,
+                                description: tool.description,
+                                icon: tool.icon,
+                                botClient: GreateBot(
+                                    baseUrl: tool.url, botName: tool.botName),
+                              );
                             },
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {
@@ -227,11 +226,15 @@ class BotsScreen extends StatelessWidget {
 class Bot {
   String name;
   String description;
+  String botName;
+  String url;
   String icon;
   Bots id;
 
   Bot(
-      {required this.name,
+      {required this.botName,
+      required this.url,
+      required this.name,
       required this.description,
       required this.icon,
       required this.id});
