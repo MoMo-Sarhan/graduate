@@ -22,28 +22,29 @@ class BotsScreen extends StatelessWidget {
         botName: Bots.yuni.name,
         url: 'https://pikachu65-yuni.hf.space',
         name: 'General chatbot',
-        description: 'Translate text to different languages',
+        description: 'General purpose language model',
         icon: 'assets/bot/bot (1).png',
         id: Bots.yuni),
     Bot(
         botName: Bots.yuno.name,
         url: 'https://pikachu65-yuno.hf.space',
         name: 'Curriculum chatbot',
-        description: 'Summarize text to the main points',
+        description:
+            'A specialized model that answers question exclusively lectures',
         icon: 'assets/bot/web.png',
         id: Bots.yuno),
     Bot(
         botName: Bots.yoda.name,
         url: 'https://pikachu65-yoda.hf.space',
-        name: 'Improve writing chatbot',
-        description: 'Check grammar and spelling mistakes',
+        name: 'Summarizer Model',
+        description: 'A comprehensive summarizer',
         icon: 'assets/bot/ai-writing.png',
         id: Bots.yoda),
     Bot(
         botName: Bots.imporvewriting.name,
         url: 'https://pikachu65-improvewriting.hf.space',
         name: 'Create Improve Writing',
-        description: 'Create quizzes for your students',
+        description: 'Enhances student writing by refining text ...',
         icon: 'assets/bot/robot.png',
         id: Bots.imporvewriting),
     Bot(
@@ -54,12 +55,12 @@ class BotsScreen extends StatelessWidget {
         icon: 'assets/bot/robot (1).png',
         id: Bots.evaluatequiz),
     Bot(
-      botName: Bots.evaluatequiz.name,
+      botName: Bots.createquiz.name,
       url: 'https://pikachu65-createquiz.hf.space',
-      name: 'coher General chatbot',
-      description: 'Real-time chat with a bot',
+      name: 'Create Quiz',
+      description: 'Exclusively designed for professors',
       icon: 'assets/bot/chatbot.png',
-      id: Bots.evaluatequiz,
+      id: Bots.createquiz,
     ),
   ];
 
@@ -208,7 +209,10 @@ class BotsScreen extends StatelessWidget {
                     color: Colors.purple[50],
                     child: ListTile(
                       title: Text(item['title']!),
-                      subtitle: Text(item['description']!),
+                      subtitle: Text(
+                        item['description']!,
+                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                      ),
                       trailing:
                           const Icon(Icons.delete, color: Colors.deepPurple),
                     ),

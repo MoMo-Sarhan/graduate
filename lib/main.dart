@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:graduate/Pages/AddPostPage.dart';
 import 'package:graduate/Pages/LoginPage.dart';
 import 'package:graduate/Pages/RegisterPage.dart';
@@ -22,7 +23,26 @@ void main() async {
   Bloc.observer = LoginBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await initNotifications();
   runApp(const MyApp());
+}
+
+Future<void> initNotifications() async {
+  // Create an instance of FlutterLocalNotificationsPlugin
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  // Initialize settings for Android and iOS
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  // Initialize the plugin with the initialized settings
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
 }
 
 class MyApp extends StatelessWidget {

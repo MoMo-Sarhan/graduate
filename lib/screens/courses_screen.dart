@@ -117,7 +117,11 @@ class _CoursesScreenState extends State<CoursesScreen>
                     link = snapshot.data![index].fullPath;
                   });
                   if (isFile(text: link)) {
-                    CourseService().downloadFile(ref: snapshot.data![index]);
+                    try {
+                      CourseService().downloadFile(ref: snapshot.data![index]);
+                    } catch (e) {
+                      log(e.toString());
+                    }
                   }
                   log(link);
                 },

@@ -22,15 +22,6 @@ class GreateBotScreenChat extends StatefulWidget {
 
 class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
   bool _canSend = true;
-  final List<Map<String, String>> messages = [
-    {
-      'sender': 'bot',
-      'text': 'Hello! How can I help you today?',
-      'displayedText': 'Hello! How can I help you today?',
-    },
-    // Add more initial messages here if needed
-  ];
-
   List<String> _chatHistory = [];
   final TextEditingController _messageControl = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -44,7 +35,7 @@ class _GreateBotScreenChatState extends State<GreateBotScreenChat> {
     super.initState();
     // Add a small delay before starting the typing animation for the description
     Future.delayed(const Duration(milliseconds: 50), () {
-      // _simulateBotResponse(widget.description);
+      _simulateBotResponse(widget.description);
     });
   }
 
