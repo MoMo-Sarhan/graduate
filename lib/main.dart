@@ -36,7 +36,7 @@ Future<void> initNotifications() async {
 
   // Initialize settings for Android and iOS
   var initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
+      const AndroidInitializationSettings('@mipmap/ic_launcher');
   var initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
