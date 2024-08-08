@@ -4,14 +4,18 @@ A Flutter-based mobile application designed to enhance the university experience
 
 ## Table of Contents
 
-1. [About](#about)
-2. [Features](#features)
-3. [Screenshots](#screenshots)
-4. [Installation](#installation)
-5. [Usage](#usage)
-6. [Contributing](#contributing)
-7. [License](#license)
-8. [Contact](#contact)
+- [University Companion](#university-companion)
+  - [Table of Contents](#table-of-contents)
+  - [About](#about)
+  - [Features](#features)
+  - [Screenshots](#screenshots)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
+  - [Usage](#usage)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Contact](#contact)
 
 ## About
 
@@ -27,12 +31,14 @@ University Companion is a comprehensive mobile application built using Flutter. 
 
 ## Screenshots
 
-![Home Screen](screenshots/home_screen.png)
-![Community Screen](screenshots/community_screen.png)
-![Chat Screen](screenshots/chat_screen.png)
-![File Sharing and Course Creation](screenshots/file_sharing_screen.png)
-![Chatbot Page](screenshots/chatbot_page.png)
-
+![Home Screen](assets/screenshot/home.jpeg)
+![Community Screen](assets/screenshot/community.jpeg)
+![Chat Screen](assets/screenshot/chat1.jpeg)
+![Chat Screen](assets/screenshot/chat2.jpeg)
+![Chat Screen](assets/screenshot/chat3.jpeg)
+![File Sharing and Course Creation](assets/screenshot/courses.jpeg) 
+![Chatbot Page](assets/screenshot/chatbo.jpeg) 
+![Chatbot Page](assets/screenshot/chatbot2.jpeg) 
 ## Installation
 
 ### Prerequisites
@@ -44,12 +50,12 @@ University Companion is a comprehensive mobile application built using Flutter. 
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/university-companion.git
+    git clone https://github.com/MoMo-Sarhan/graduate.git
     ```
 
 2. Navigate to the project directory:
     ```bash
-    cd university-companion
+    cd graduate
     ```
 
 3. Install dependencies:
@@ -98,8 +104,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-Developed by [Your Name](https://yourwebsite.com)
+Developed by [Mohamed Sarhan](https://yourwebsite.com)
 
-- Email: youremail@example.com
+- Email: muhammedmortada19@gmail.com
 - Twitter: [@yourhandle](https://twitter.com/yourhandle)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- LinkedIn: [mohamed mortada][def]
+
+
+[def]: https://linkedin.com/in/mohamed-mortada-sarhan
