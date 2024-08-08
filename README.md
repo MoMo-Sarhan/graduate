@@ -1,6 +1,6 @@
-# TaskManager
+# University Companion
 
-A Flutter-based mobile application designed to help users manage their tasks efficiently. With an intuitive interface and robust functionality, users can add, edit, delete, and categorize their tasks seamlessly.
+A Flutter-based mobile application designed to enhance the university experience by providing a platform for students to connect, share, and collaborate. 
 
 ## Table of Contents
 
@@ -15,21 +15,23 @@ A Flutter-based mobile application designed to help users manage their tasks eff
 
 ## About
 
-TaskManager is a mobile application built using Flutter. It helps users organize and manage their tasks effectively, providing a clean and user-friendly interface. Whether you need to track your daily activities, work tasks, or personal goals, TaskManager is designed to assist you in staying organized and productive.
+University Companion is a comprehensive mobile application built using Flutter. It aims to streamline various aspects of university life by offering features such as community interaction, chat functionality, file sharing, course creation, and chatbot assistance. Whether you need to connect with classmates, share resources, or get help from chatbots, University Companion has you covered.
 
 ## Features
 
-- Task creation and management
-- Task categorization
-- Push notifications for task reminders
-- Offline support
-- User authentication
+- **Home Screen**: The main dashboard that provides an overview and quick access to various sections of the app.
+- **Community Screen**: A space for students to post and interact with each other. It includes a button to navigate to the create post screen.
+- **Chat Screen**: Enables both group and individual chats, facilitating seamless communication among students.
+- **File Sharing and Course Creation**: A dedicated space where students can upload files and create courses, making resource sharing easy.
+- **Chatbot Page**: Includes five or more chatbots to assist students with various queries and tasks.
 
 ## Screenshots
 
 ![Home Screen](screenshots/home_screen.png)
-![Task List](screenshots/task_list.png)
-![Task Details](screenshots/task_details.png)
+![Community Screen](screenshots/community_screen.png)
+![Chat Screen](screenshots/chat_screen.png)
+![File Sharing and Course Creation](screenshots/file_sharing_screen.png)
+![Chatbot Page](screenshots/chatbot_page.png)
 
 ## Installation
 
@@ -42,12 +44,12 @@ TaskManager is a mobile application built using Flutter. It helps users organize
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/yourproject.git
+    git clone https://github.com/yourusername/university-companion.git
     ```
 
 2. Navigate to the project directory:
     ```bash
-    cd yourproject
+    cd university-companion
     ```
 
 3. Install dependencies:
@@ -64,10 +66,11 @@ TaskManager is a mobile application built using Flutter. It helps users organize
 
 1. Open the app.
 2. Sign up or log in using your credentials.
-3. Navigate to the task list from the home screen.
-4. Click the '+' button to add a new task.
-5. Fill in the task details and save.
-6. Edit or delete tasks by long-pressing on them.
+3. Navigate to the home screen for an overview of the app.
+4. Explore the community screen to interact with other students and create posts.
+5. Use the chat screen for group or individual conversations.
+6. Upload files and create courses in the dedicated space.
+7. Access the chatbot page to get assistance from various chatbots.
 
 ## Contributing
 
